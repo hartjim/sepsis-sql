@@ -1,0 +1,20 @@
+SELECT COUNT (DISTINCT V.PatientID)
+FROM [AdmVisits] V
+JOIN AbsDrgDiagnoses D ON V.VisitID = D.VisitID
+JOIN AdmDischarge T ON V.VisitID = T.VisitID
+WHERE (D.Diagnosis = '785.52' OR D.Diagnosis = '995.91' OR D.Diagnosis = '995.92' OR D.Diagnosis = 'R6.521' OR D.Diagnosis = 'R6.520' OR D.Diagnosis = 'A02.1' OR D.Diagnosis = 'A22.7' OR D.Diagnosis = 'A26.7' OR D.Diagnosis = 'A32.7' OR D.Diagnosis = 'A40.0' OR D.Diagnosis = 'A40.3' OR D.Diagnosis = 'A40.8' OR D.Diagnosis = 'A40.9' OR D.Diagnosis = 'A410.1' OR D.Diagnosis = 'A410.2' OR D.Diagnosis = 'A41.1' OR D.Diagnosis = 'A41.2' OR D.Diagnosis = 'A41.3' OR D.Diagnosis = 'A41.4' OR D.Diagnosis = 'A415.0' OR D.Diagnosis = 'A415.1' OR D.Diagnosis = 'A415.2' OR D.Diagnosis = 'A415.3' OR D.Diagnosis = 'A415.9' OR D.Diagnosis = 'A418.1' OR D.Diagnosis = 'A418.9' OR D.Diagnosis = 'A41.9' OR D.Diagnosis = 'A42.7' OR D.Diagnosis = 'A548.6' OR D.Diagnosis = 'B37.7' OR D.Diagnosis = 'R652.0' OR D.Diagnosis = 'R652.1')
+AND (V.Status = 'DIS IN')
+AND (T.DischargeDateTime BETWEEN '2016-01-01 00:00:00.0' AND '2016-01-31 23:59:59.9')
+
+
+SELECT V.PatientID, V.UnitNumber, V.AccountNumber
+FROM [AdmVisits] V
+JOIN AbsDrgDiagnoses D ON V.VisitID = D.VisitID
+JOIN AdmDischarge T ON V.VisitID = T.VisitID
+WHERE (D.Diagnosis = '785.52' OR D.Diagnosis = '995.91' OR D.Diagnosis = '995.92' OR D.Diagnosis = 'R6.521' OR D.Diagnosis = 'R6.520' OR D.Diagnosis = 'A02.1' OR D.Diagnosis = 'A22.7' OR D.Diagnosis = 'A26.7' OR D.Diagnosis = 'A32.7' OR D.Diagnosis = 'A40.0' OR D.Diagnosis = 'A40.3' OR D.Diagnosis = 'A40.8' OR D.Diagnosis = 'A40.9' OR D.Diagnosis = 'A410.1' OR D.Diagnosis = 'A410.2' OR D.Diagnosis = 'A41.1' OR D.Diagnosis = 'A41.2' OR D.Diagnosis = 'A41.3' OR D.Diagnosis = 'A41.4' OR D.Diagnosis = 'A415.0' OR D.Diagnosis = 'A415.1' OR D.Diagnosis = 'A415.2' OR D.Diagnosis = 'A415.3' OR D.Diagnosis = 'A415.9' OR D.Diagnosis = 'A418.1' OR D.Diagnosis = 'A418.9' OR D.Diagnosis = 'A41.9' OR D.Diagnosis = 'A42.7' OR D.Diagnosis = 'A548.6' OR D.Diagnosis = 'B37.7' OR D.Diagnosis = 'R652.0' OR D.Diagnosis = 'R652.1')
+AND (V.Status = 'DIS IN')
+AND (T.DischargeDateTime BETWEEN '2016-01-01 00:00:00.0' AND '2016-01-31 23:59:59.9')
+
+SELECT DISTINCT (OrderedProcedureMnemonic)
+FROM OeOrders
+WHERE OrderedProcedureMnemonic LIKE '%NUK%'
