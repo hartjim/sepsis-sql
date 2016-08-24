@@ -2,11 +2,11 @@ SELECT A.FacilityID AS 'Servicing Facility', A.UnitNumber AS 'MRN', A.AccountNum
  CONVERT (VARCHAR, S.ArrivalDateTime, 100) AS 'ED Arrival Data Time', CONVERT (VARCHAR, A.AdmitDateTime, 100) AS 'Admit Date Time',
   CONVERT (VARCHAR, A.DischargeDateTime, 100) AS 'Discharge Date Time', CONVERT (VARCHAR, H.StartDateTime, 100) AS 'Triage Date Time',
     DATEDIFF (minute, S.ArrivalDateTime, H.StartDateTime) AS 'Wait Time(min)', DATEDIFF (year, A.BirthDateTime,
-     A.AdmitDateTime) AS 'Age', A.Sex, D.Diagnosis AS 'Dx Codes', (M.LastName +', ' + M.FirstName) AS 'Attending Physican', 
-     (N.LastName +', ' + N.FirstName) AS 'ED Physican', A.ReasonForVisit AS 'Reason for Visit',
-      A.DischargeDispositionID AS 'Discharge Disposition', CASE WHEN A.DischargeDispositionID = 'EXP' THEN 'Yes' ELSE 'No'
-       END AS 'Expired', B.Code AS 'DRG', DATEDIFF (day, A.AdmitDateTime, A.DischargeDateTime) AS 'LOS',
-       O.OrderedProcedureName AS 'Sepsis Ordered Set'
+     A.AdmitDateTime) AS 'Age', A.Sex, D.Diagnosis AS 'Dx Codes'--, (M.LastName +', ' + M.FirstName) AS 'Attending Physican', 
+     --(N.LastName +', ' + N.FirstName) AS 'ED Physican', A.ReasonForVisit AS 'Reason for Visit'
+      --A.DischargeDispositionID AS 'Discharge Disposition', CASE WHEN A.DischargeDispositionID = 'EXP' THEN 'Yes' ELSE 'No'
+       --END AS 'Expired', B.Code AS 'DRG', DATEDIFF (day, A.AdmitDateTime, A.DischargeDateTime) AS 'LOS'
+       -- O.OrderedProcedureName AS 'Sepsis Ordered Set Name', CONVERT (VARCHAR, O.OrderDateTime, 100) AS 'Sepsis Ordered Set Date Time'
       
 FROM AdmVisits V
 JOIN AbsDrgDiagnoses D ON V.VisitID = D.VisitID
@@ -19,23 +19,25 @@ JOIN DMisProvider M ON P.AttendID = M.ProviderID
 JOIN DMisProvider N ON P.EmergencyID = N.ProviderID
 JOIN AbsDrgData B ON V.VisitID = B.VisitID
 JOIN OeOrders O ON V.VisitID = O.VisitID
-WHERE A.FacilityID = 'SMM'
+-- JOIN PhaRxAdministrations R ON V.VisitID = R.VisitID
 
-AND (D.Diagnosis = '785.52' OR D.Diagnosis = '995.91' OR D.Diagnosis = '995.92' OR D.Diagnosis = 'R6.521' OR D.Diagnosis = 'R6.520' OR D.Diagnosis = 'A02.1' OR D.Diagnosis = 'A22.7' OR D.Diagnosis = 'A26.7' OR D.Diagnosis = 'A32.7' OR D.Diagnosis = 'A40.0' OR D.Diagnosis = 'A40.3' OR D.Diagnosis = 'A40.8' OR D.Diagnosis = 'A40.9' OR D.Diagnosis = 'A410.1' OR D.Diagnosis = 'A410.2' OR D.Diagnosis = 'A41.1' OR D.Diagnosis = 'A41.2' OR D.Diagnosis = 'A41.3' OR D.Diagnosis = 'A41.4' OR D.Diagnosis = 'A415.0' OR D.Diagnosis = 'A415.1' OR D.Diagnosis = 'A415.2' OR D.Diagnosis = 'A415.3' OR D.Diagnosis = 'A415.9' OR D.Diagnosis = 'A418.1' OR D.Diagnosis = 'A418.9' OR D.Diagnosis = 'A41.9' OR D.Diagnosis = 'A42.7' OR D.Diagnosis = 'A548.6' OR D.Diagnosis = 'B37.7' OR D.Diagnosis = 'R652.0' OR D.Diagnosis = 'R652.1')
+WHERE A.FacilityID = 'SMM'
+AND D.Diagnosis IN ('785.52', '995.91', '995.92', 'R6.521', 'R6.520', 'A02.1', 'A22.7', 'A26.7', 'A32.7', 'A40.0', 'A40.3', 'A40.8', 'A40.9', 'A410.1', 'A410.2','A41.1', 'A41.2', 'A41.3', 'A41.4', 'A415.0', 'A415.1', 'A415.2', 'A415.3', 'A415.9', 'A418.1', 'A418.9', 'A41.9', 'A42.7', 'A548.6', 'B37.7', 'R652.0', 'R652.1')
 AND (V.Status = 'DIS IN') -- need way in AbstractData to acheive 'inpatient' and 'discharged'
 AND (T.DischargeDateTime BETWEEN '2016-01-01 00:00:00.0' AND '2016-01-31 23:59:59.9')
-AND OrderedProcedureMnemonic IN ('EEEDPSEP1', 'EEPEDSEP1', 'NUCCSEPS1', 'NUKEDSEPS2', 'NUREDSEPS2', 'NUQEDSEPS1', 'NUPEDSEPS1', 'NUSDSEPS1', 'NUKEDNSP1', 'NUPEDNSP1', 'NUQEDNSP1',
+
+-- AND O.OrderedProcedureMnemonic IN ('EEEDPSEP1', 'EEPEDSEP1', 'NUCCSEPS1', 'NUKEDSEPS2', 'NUREDSEPS2', 'NUQEDSEPS1', 'NUPEDSEPS1', 'NUSDSEPS1', 'NUKEDNSP1', 'NUPEDNSP1', 'NUQEDNSP1',
+-- 'NUREDNSP1', 'NUSEDNSP1','NUKEDPSM1', 'NUPEDPSM1', 'NUREDPSM1', 'NUSEDPSM1', 'NUQEDPSM1', 'NUMEDNSS1', 'EEEDNFVSP1', 'SUMETSEP1', 'SUMEDSEP1',
+--  'SUEDSEPS1', 'SUEDPSEP1', 'SUCNVEGT2', 'SUCNVSEP3', 'SUMEDSSA3', 'SUCCSEP1', 'SUEDPSEP1', 'SUNBJSEP1', 'EEEDPSEP1', 'TUMEDSEP1', 'TUEDSEPS1',
+-- 'TUPEDSSE1', 'EEDSEPS1')
+
+
+SELECT TOP 400 OrderedProcedureMnemonic
+FROM OeOrders
+WHERE O.OrderedProcedureMnemonic IN ('EEEDPSEP1', 'EEPEDSEP1', 'NUCCSEPS1', 'NUKEDSEPS2', 'NUREDSEPS2', 'NUQEDSEPS1', 'NUPEDSEPS1', 'NUSDSEPS1', 'NUKEDNSP1', 'NUPEDNSP1', 'NUQEDNSP1',
  'NUREDNSP1', 'NUSEDNSP1','NUKEDPSM1', 'NUPEDPSM1', 'NUREDPSM1', 'NUSEDPSM1', 'NUQEDPSM1', 'NUMEDNSS1', 'EEEDNFVSP1', 'SUMETSEP1', 'SUMEDSEP1',
   'SUEDSEPS1', 'SUEDPSEP1', 'SUCNVEGT2', 'SUCNVSEP3', 'SUMEDSSA3', 'SUCCSEP1', 'SUEDPSEP1', 'SUNBJSEP1', 'EEEDPSEP1', 'TUMEDSEP1', 'TUEDSEPS1',
-   'TUPEDSSE1', 'EEDSEPS1')
-
-
-SELECT TOP 10 OrderedProcedureMnemonic
-FROM OeOrders
-
-
-SELECT DISTINCT DischargeDispositionID
-FROM AbstractData
+ 'TUPEDSSE1', 'EEDSEPS1')
 
 
 SELECT TOP 10 D.Code, D.ProblemID
@@ -43,3 +45,4 @@ FROM HubPatientProblemCodes D
 WHERE D.Code = '785.52' OR D.Code = '995.91' OR D.Code = '995.92' OR D.Code = 'R6.521' OR D.Code = 'R6.520' OR D.Code = 'A02.1' OR D.Code = 'A22.7' OR D.Code = 'A26.7' OR D.Code = 'A32.7' OR D.Code = 'A40.0' OR D.Code = 'A40.3' OR D.Code = 'A40.8' OR D.Code = 'A40.9' OR D.Code = 'A410.1' OR D.Code = 'A410.2' OR D.Code = 'A41.1' OR D.Code = 'A41.2' OR D.Code = 'A41.3' OR D.Code = 'A41.4' OR D.Code = 'A415.0' OR D.Code = 'A415.1' OR D.Code = 'A415.2' OR D.Code = 'A415.3' OR D.Code = 'A415.9' OR D.Code = 'A418.1' OR D.Code = 'A418.9' OR D.Code = 'A41.9' OR D.Code = 'A42.7' OR D.Code = 'A548.6' OR D.Code = 'B37.7' OR D.Code = 'R652.0' OR D.Code = 'R652.1'
 -- 
 
+KILL @spid
