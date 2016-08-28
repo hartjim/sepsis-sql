@@ -1,0 +1,19 @@
+select A.PatientID
+from AdmVisits A
+join AdmDischarge D on A.VisitID = D.VisitID
+join AbsDrgDiagnoses B on A.VisitID = B.VisitID
+
+where A.FacilityID = 'SMM'
+and (D.DischargeDateTime between '2016-01-01 00:00:00.0' and '2016-01-31 23:59:59.9')
+and B.Diagnosis in ('785.52', '995.91', '995.92', 'R6.521', 'R6.520', 'A02.1', 'A22.7', 'A26.7', 'A32.7', 'A40.0', 'A40.3', 'A40.8', 'A40.9', 'A410.1', 'A410.2','A41.1', 'A41.2', 'A41.3', 'A41.4', 'A415.0', 'A415.1', 'A415.2', 'A415.3', 'A415.9', 'A418.1', 'A418.9', 'A41.9', 'A42.7', 'A548.6', 'B37.7', 'R652.0', 'R652.1')
+and A.Status = 'DIS IN'
+
+order by A.UnitNumber asc
+--
+
+select distinct Diagnosis
+from AbsDrgDiagnoses
+where Diagnosis in ('785.52', '995.91', '995.92', 'R6.521', 'R6.520', 'A02.1', 'A22.7', 'A26.7', 'A32.7', 'A40.0', 'A40.3', 'A40.8', 'A40.9', 'A410.1', 'A410.2','A41.1', 'A41.2', 'A41.3', 'A41.4', 'A415.0', 'A415.1', 'A415.2', 'A415.3', 'A415.9', 'A418.1', 'A418.9', 'A41.9', 'A42.7', 'A548.6', 'B37.7', 'R652.0', 'R652.1')
+-- 
+
+
