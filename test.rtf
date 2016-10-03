@@ -1,157 +1,170 @@
 {\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
-{\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\fnil\fcharset0 Menlo-Italic;\f2\fnil\fcharset0 Menlo-Regular;
-\f3\fnil\fcharset0 Menlo-Bold;}
-{\colortbl;\red255\green255\blue255;\red32\green32\blue32;\red81\green136\blue67;\red153\green168\blue186;
-\red86\green132\blue173;\red191\green100\blue38;\red88\green118\blue71;\red22\green171\blue173;}
-\margl1440\margr1440\vieww16200\viewh15840\viewkind0
+{\fonttbl\f0\fnil\fcharset0 Menlo-Italic;\f1\fnil\fcharset0 Menlo-BoldItalic;\f2\fnil\fcharset0 Menlo-Bold;
+\f3\fnil\fcharset0 Menlo-Regular;}
+{\colortbl;\red255\green255\blue255;\red81\green136\blue67;\red32\green32\blue32;\red191\green100\blue38;
+\red153\green168\blue186;\red88\green118\blue71;\red22\green171\blue173;}
+\margl1440\margr1440\vieww10800\viewh8400\viewkind0
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
 
-\f0\fs24 \cf0 \cb2 \uc0\u8232 \u8232 
-\f1\i \cf3 /** table definitions */\uc0\u8232 \u8232 
-\f2\i0 \cf4 hdfs_path = hdfs://\cf5 10.0.100.252\cf4 :\cf5 8020\cf4 /user/hdfs/stjoe/amalga/sqooped/\cf5 2016\cf4 /\cf5 09\cf4 /\cf5 01\uc0\u8232 \u8232 
-\f3\b \cf6 val 
-\f2\b0 \cf4 VISITPT_ALL_DIS = sqlContext.read.parquet(\cf7 s"
-\f3\b \cf8 $
-\f2\b0 \cf4 hdfs_path\cf7 /VISITPT_ALL_DIS/*.parquet"\cf4 )\uc0\u8232 VISITPT_ALL_DIS.registerTempTable(\cf7 "VISITPT_ALL_DIS"\cf4 )\uc0\u8232 \u8232 
-\f3\b \cf6 val 
-\f2\b0 \cf4 QryIntVisitPT_All_Activity = sqlContext.read.parquet(\cf7 s"
-\f3\b \cf8 $
-\f2\b0 \cf4 hdfs_path\cf7 /QryIntVisitPT_All_Activity/*.parquet"\cf4 )\uc0\u8232 QryIntVisitPT_All_Activity.registerTempTable(\cf7 "QryIntVisitPT_All_Activity"\cf4 )\uc0\u8232 \u8232 
-\f3\b \cf6 val 
-\f2\b0 \cf4 OrderVisitPT_All_Activity = sqlContext.read.parquet(\cf7 s"
-\f3\b \cf8 $
-\f2\b0 \cf4 hdfs_path\cf7 /OrderVisitPT_All_Activity/*.parquet"\cf4 )\uc0\u8232 OrderVisitPT_All_Activity.registerTempTable(\cf7 "OrderVisitPT_All_Activity"\cf4 )\uc0\u8232 \u8232 
-\f3\b \cf6 val 
-\f2\b0 \cf4 Dictionary_OrderSetDetails_Lookup = sqlContext.read.parquet(\cf7 s"
-\f3\b \cf8 $
-\f2\b0 \cf4 hdfs_path\cf7 /Dictionary_OrderSetDetails_Lookup/*.parquet"\cf4 )\uc0\u8232 Dictionary_OrderSetDetails_Lookup.registerTempTable(\cf7 "Dictionary_OrderSetDetails_Lookup"\cf4 )\uc0\u8232 \u8232 
-\f3\b \cf6 val 
-\f2\b0 \cf4 MCPathBBPt_All_ADM = sqlContext.read.parquet(\cf7 s"
-\f3\b \cf8 $
-\f2\b0 \cf4 hdfs_path\cf7 /MCPathBBPt_All_ADM/*.parquet"\cf4 )\uc0\u8232 MCPathBBPt_All_ADM.registerTempTable(\cf7 "MCPathBBPt_All_ADM"\cf4 )\uc0\u8232 \u8232 
-\f3\b \cf6 val 
-\f2\b0 \cf4 LABVISITPT_ALL_DIS = sqlContext.read.parquet(\cf7 s"
-\f3\b \cf8 $
-\f2\b0 \cf4 hdfs_path\cf7 /LABVISITPT_ALL_DIS/*.parquet"\cf4 )\uc0\u8232 LABVISITPT_ALL_DIS.registerTempTable(\cf7 "LABVISITPT_ALL_DIS"\cf4 )\uc0\u8232 \u8232 
-\f3\b \cf6 val 
-\f2\b0 \cf4 ABS_DG1601 = sqlContext.read.parquet(\cf7 s"
-\f3\b \cf8 $
-\f2\b0 \cf4 hdfs_path\cf7 /ABS_DG1601/*.parquet"\cf4 )\uc0\u8232 ABS_DG1601.registerTempTable(\cf7 "ABS_DG1601"\cf4 )\uc0\u8232 \u8232 
-\f3\b \cf6 val 
-\f2\b0 \cf4 Encounter_Patient_MDR = sqlContext.read.parquet(\cf7 s"
-\f3\b \cf8 $
-\f2\b0 \cf4 hdfs_path\cf7 /Encounter_Patient_MDR/*.parquet"\cf4 )\uc0\u8232 Encounter_Patient_MDR.registerTempTable(\cf7 "Encounter_Patient_MDR"\cf4 )\uc0\u8232 \u8232 
-\f3\b \cf6 val 
-\f2\b0 \cf4 AdmVitalSigns = sqlContext.read.parquet(\cf7 s"
-\f3\b \cf8 $
-\f2\b0 \cf4 hdfs_path\cf7 /AdmVitalSigns/*.parquet"\cf4 )\uc0\u8232 AdmVitalSigns.registerTempTable(\cf7 "AdmVitalSigns"\cf4 )\uc0\u8232 \u8232 
-\f3\b \cf6 val 
-\f2\b0 \cf4 EdmPatientStatusEventHistory = sqlContext.read.parquet(\cf7 s"
-\f3\b \cf8 $
-\f2\b0 \cf4 hdfs_path\cf7 /EdmPatientStatusEventHistory/*.parquet"\cf4 )\uc0\u8232 EdmPatientStatusEventHistory.registerTempTable(\cf7 "EdmPatientStatusEventHistory"\cf4 )\uc0\u8232 \u8232 
-\f3\b \cf6 val 
-\f2\b0 \cf4 ADT_Lookup_Provider = sqlContext.read.parquet(\cf7 s"
-\f3\b \cf8 $
-\f2\b0 \cf4 hdfs_path\cf7 /ADT_Lookup_Provider/*.parquet"\cf4 )\uc0\u8232 ADT_Lookup_Provider.registerTempTable(\cf7 "ADT_Lookup_Provider"\cf4 )\uc0\u8232 \u8232 
-\f3\b \cf6 val 
-\f2\b0 \cf4 PhaRxAdministrations = sqlContext.read.parquet(\cf7 s"
-\f3\b \cf8 $
-\f2\b0 \cf4 hdfs_path\cf7 /PhaRxAdministrations/*.parquet"\cf4 )\uc0\u8232 PhaRxAdministrations.registerTempTable(\cf7 "PhaRxAdministrations"\cf4 )\uc0\u8232 \u8232 
-\f3\b \cf6 val 
-\f2\b0 \cf4 AbstractData = sqlContext.read.parquet(\cf7 s"
-\f3\b \cf8 $
-\f2\b0 \cf4 hdfs_path\cf7 /AbstractData/*.parquet"\cf4 )\uc0\u8232 AbstractData.registerTempTable(\cf7 "AbstractData"\cf4 )\uc0\u8232 \u8232 
-\f3\b \cf6 val 
-\f2\b0 \cf4 PhaRx = sqlContext.read.parquet(\cf7 s"
-\f3\b \cf8 $
-\f2\b0 \cf4 hdfs_path\cf7 /PhaRx/*.parquet"\cf4 )\uc0\u8232 PhaRx.registerTempTable(\cf7 "PhaRx"\cf4 )\uc0\u8232 \u8232 
-\f3\b \cf6 val 
-\f2\b0 \cf4 PhaRxMedications = sqlContext.read.parquet(\cf7 s"
-\f3\b \cf8 $
-\f2\b0 \cf4 hdfs_path\cf7 /PhaRxMedications/*.parquet"\cf4 )\uc0\u8232 PhaRxMedications.registerTempTable(\cf7 "PhaRxMedications"\cf4 )\uc0\u8232 \u8232 
-\f3\b \cf6 val 
-\f2\b0 \cf4 DPhaDrugData = sqlContext.read.parquet(\cf7 s"
-\f3\b \cf8 $
-\f2\b0 \cf4 hdfs_path\cf7 /DPhaDrugData/*.parquet"\cf4 )\uc0\u8232 DPhaDrugData.registerTempTable(\cf7 "DPhaDrugData"\cf4 )\uc0\u8232 \u8232 \u8232 
-\f1\i \cf3 /** test the temp table below  */\uc0\u8232 \u8232 
-\f3\i0\b \cf6 val 
-\f2\b0 \cf4 querytmp0 = \cf7 """\uc0\u8232   SELECT DISTINCT DIS.EID\u8232     ,DIS.Institution\u8232     ,DIS.ServicingFacility\u8232     ,DIS.MRN\u8232     ,DIS.Account\u8232     ,DIS.NAME AS 'Patient Name'\u8232     ,DIS.AdmitDateTime\u8232     ,DIS.AdmitDate\u8232     ,DIS.AdmitTime\u8232     ,DIS.Age\u8232     ,DIS.Sex AS Gender\u8232     ,DIS.DxCodes\u8232     ,DIS.DRG\u8232     ,DIS.DischargeDateTime\u8232     ,DIS.AttendingMDName AS 'Attending Physician'\u8232     ,EN.ErPhys\u8232     ,ErMD.FirstName +' '+ErMd.LastName AS 'ED Physician'\u8232     ,DIS.AdmitComplaint AS 'Reason for Visit'\u8232     ,DIS.DischargeDisposition\u8232     ,DIS.ERAdmitDtTm AS 'ED Received Date Time'\u8232     ,avs.ArrivalDateTime AS 'ED Arrival Date Time'\u8232     ,DF.POA\u8232     ,CASE\u8232       WHEN DIS.DischargeDisposition = 'EXP'\u8232         THEN 'Yes'\u8232       ELSE 'No'\u8232       END AS Expired\u8232     ,EN.MortalityRisk AS AprDRGRiskMortality\u8232     ,EN.Severity1 AS AprDRGSeverity\u8232     ,EDT.StartDateTime AS TRIAGEDATETIME\u8232     ,DATEDIFF(MI, avs.ArrivalDateTime, EDT.StartDateTime) AS [Wait Time(MM)]\u8232     ,DIS.LOS\u8232     ,DIS.Total_Cost\u8232     ,DIS.DAYSSINCELASTIPVISIT\u8232     ,DIS.LASTIPVISITDTTM\u8232     ,DIS.PreviousDRG\u8232 \u8232   FROM AZViews.dbo.VISITPT_ALL_DIS AS DIS(NOLOCK)\u8232   INNER JOIN azABS.dbo.ABS_DG1601 AS dF(NOLOCK) ON DIS.EID = DF.EID\u8232   INNER JOIN sjhsEncounterData.dbo.Encounter_Patient_MDR AS EN(NOLOCK) ON DIS.EID = EN.EID\u8232   LEFT JOIN sjhsADM.dbo.AdmVitalSigns avs(NOLOCK) ON EN.EID = avs.EID\u8232   LEFT JOIN [sjhsEDM].[dbo].[EdmPatientStatusEventHistory] AS EDT(NOLOCK) ON EN.EID = EDT.EID\u8232     AND EDT.[EventID] = 'TRIAGE'\u8232   LEFT JOIN azadt.dbo.ADT_Lookup_Provider  as ErMD WITH (NOLOCK) On EN.ErPhys = ERMD.Mnemonic\u8232     AND EN.Institution  = ERMD.ministry\u8232 \u8232   WHERE DIS.PatientType = 'IN'\u8232     AND DIS.AccountStatus = 'DIS'\u8232     AND DIS.DischargeDateTime BETWEEN @StartDate\u8232     AND @EndDate\u8232     AND DIS.Institution IN (@Institution)\u8232     AND DIS.ServicingFacility IN (@ServicingFacility)\u8232     AND DF.DxCode IN (\u8232        '785.52'\u8232       ,'995.91'\u8232       ,'995.92'\u8232       ,'R65.21'\u8232       ,'A41.9'\u8232       ,'R65.20' /** NEW ICD10 */\u8232       ,'A021'\u8232       ,'A227'\u8232       ,'A267'\u8232       ,'A327'\u8232       ,'A400'\u8232       ,'A401'\u8232       ,'A403'\u8232       ,'A408'\u8232       ,'A409'\u8232       ,'A4101'\u8232       ,'A4102'\u8232       ,'A411'\u8232       ,'A412'\u8232       ,'A413'\u8232       ,'A414'\u8232       ,'A4150'\u8232       ,'A4151'\u8232       ,'A4152'\u8232       ,'A4153'\u8232       ,'A4159'\u8232       ,'A4181'\u8232       ,'A4189'\u8232       ,'A419'\u8232       ,'A427'\u8232       ,'A5486'\u8232       ,'B377'\u8232       ,'R6520'\u8232       ,'R6521'\u8232       )         """\u8232 
-\f3\b \cf6 val 
-\f2\b0 \cf4 MN = sqlContext.sql(querytmp0)\uc0\u8232   MN.registerTempTable(\cf7 "MN"\cf4 )\uc0\u8232 \u8232 \u8232 
-\f3\b \cf6 val 
-\f2\b0 \cf4 querytmp1 = \cf7 """\uc0\u8232   SELECT EID\u8232     ,Min([Activity Date/Time]) AS SepsisDoneDate\u8232     ,'Y' AS [SepsisScreenDone]\u8232   FROM azViews.dbo.QryIntVisitPT_All_Activity AS DIS WITH (NOLOCK)\u8232   WHERE DIS.IntervenID IN (\u8232        '0250530'\u8232       ,'0250540'\u8232       ,'0300590'\u8232       ,'0301105'\u8232       ,'0300895'\u8232       ,'0301100'\u8232       ,'0150000'\u8232       ,'0300330'\u8232       ,'0150005')\u8232     AND Ctr = '1'\u8232     AND DIS.Query IN (\u8232        'NSEPINCR'\u8232       ,'NSEPSECA'\u8232       ,'NSEPSIRS01'\u8232       ,'NSEPSECB'\u8232       ,'NSEPPOS'\u8232       ,'NSEPPHY'\u8232       ,'NSEPOS01'\u8232       ,'NSEPOD01'\u8232       ,'NSEPSECC'\u8232       ,'NSEPSEV'\u8232       ,'NSEPNIN'\u8232       ,'NPEDSETT\u8232       ,'NPEDSETI'\u8232       ,'NPEDSETH'\u8232       ,'NPEDSETR'\u8232       ,'NPEDSETC'\u8232       ,'NPEDSETN'\u8232       ,'ESPINFP'\u8232       ,'ESPFVR'\u8232       ,'ESPNEURO'\u8232       ,'NSEPNPOS'\u8232       ,'ESPPOSTV'\u8232       ,'NSEPOD'\u8232       ,'NSEPSIRS'\u8232     GROUP BY EID\u8232     ) ON MN.EID = SS.EID\u8232 \u8232                 """\u8232 
-\f3\b \cf6 val 
-\f2\b0 \cf4 SS = sqlContext.sql(querytmp1)\uc0\u8232 SS.registerTempTable(\cf7 "SS"\cf4 )\uc0\u8232 \u8232 \u8232 
-\f3\b \cf6 val 
-\f2\b0 \cf4 querytmp2 = \cf7 """\uc0\u8232   SELECT EID\u8232     ,Min([Activity Date/Time]) AS FirstSepsisDoneDate\u8232   FROM azViews.dbo.QryIntVisitPT_All_Activity AS DIS1 WITH (NOLOCK)\u8232   WHERE DIS1.Assessment IN (\u8232       'NU.EESEPSISSC03'\u8232       ,'ED.EEADTRIAGE14'\u8232       ,'ED.TSTSEPSIS'\u8232       ,'ED.TSTSEPSIS1'\u8232       ,'NU.EESEPSISSC02'\u8232       ,'NU.EESEPSISSCRN'\u8232       ,'NUR.RRTSEPSIS'\u8232       ,'NUR.RRTSEPSIS1'\u8232       ,'NUR.SEPSIS'\u8232       ,'NUR.SEPSIS2'\u8232       ,'NU.EESEPSISSC01'\u8232       ,'NUR.SEPSIS1'\u8232       )\u8232     AND DIS1.Query = 'NSEPPOS'\u8232     AND Dis1.[Query Text 2] LIKE '%Positive%'\u8232   GROUP BY EID\u8232   ) ON MN.EID = FSS.EID\u8232                 """\u8232 
-\f3\b \cf6 val 
-\f2\b0 \cf4 FSS = sqlContext.sql(querytmp2)\uc0\u8232 FSS.registerTempTable(\cf7 "FSS"\cf4 )\uc0\u8232 \u8232 \u8232 
-\f3\b \cf6 val 
-\f2\b0 \cf4 querytmp3 = \cf7 """\uc0\u8232   SELECT ORA.EID\u8232     ,ORA.OrderDateTime\u8232     ,ORD.Description AS OrderDescription\u8232   FROM azviews.dbo.OrderVisitPT_All_Activity AS ORA\u8232   LEFT JOIN AZVIEWS.DBO.Dictionary_OrderSetDetails_Lookup AS ORD ON ORA.SourceID = ORD.SourceID\u8232     AND ORA.OrderedProcedure = ORD.Code\u8232   WHERE ora.OrderedProcedure IN (\u8232       'EEEDPSEP1',\u8232       'NUCCSEPS1',\u8232       'NUPEDSEPS1',\u8232       'NUSDSEPS1',\u8232       'NUQEDNSP1',\u8232       'NUREDNSP1',\u8232       'NUSEDNSP1',\u8232       'NUKEDPSM1',\u8232       'NUPEDPSM1',\u8232       'NUREDPSM1',\u8232       'NUSEDPSM1',\u8232       'NUQEDPSM1',\u8232       'NUMEDNSS1',\u8232       'EEEDNFVSP1',\u8232       'SUMEDSEP1',\u8232       'SUEDSEPS1',\u8232       'SUEDPSEP1',\u8232       'SUCNVEGT2',\u8232       'SUCNVSEP3',\u8232       'SUMEDSSA3',\u8232       'SUCCSEP1',\u8232       'SUEDPSEP1',\u8232       'SUNBJSEP1',\u8232       'EEEDPSEP1',\u8232       'TUEDSEPS1',\u8232       'TUPEDSSE2',\u8232       'EEDSEPS1',\u8232       'EBCNVPSEP1',\u8232       'EECNVPSEP1',\u8232       'EEPEDSEP1',\u8232       'EIEDPSEP1',\u8232       'NQEDSEPPD2',\u8232       'NUKEDNSP1',\u8232       'NUKEDSEPS2',\u8232       'NUPEDNSP1',\u8232       'NUPEDSEPS2',\u8232       'NUQEDSEPS3',\u8232       'NUREDSEPS2',\u8232       'NUSEDNSP2',\u8232       'SIEDPSEP1',\u8232       'SIEDSEPS1',\u8232       'STEDPSEP1',\u8232       'STEDSEPS1',\u8232       'SUCNVPSEP1',\u8232       'SUMETSEP1',\u8232       'SXEDFSAY1',\u8232       'SXEDPSEP1',\u8232       'SXEDSEPS1',\u8232       'TBMEDSEP1',\u8232       'TIEDSEPS1',\u8232       'TUMEDSEP1',\u8232       'TUPEDSEP1',\u8232       'TUPEDSSE2',\u8232       'TPPEDSEP1',\u8232       'STEDSEPS2',\u8232       'SIEDSEPS2',\u8232       'SXEDSEPS2',\u8232       'SUCCSEP2'\u8232       )\u8232   ) ON MN.EID = OE.EID\u8232                 """\u8232 
-\f3\b \cf6 val 
-\f2\b0 \cf4 OE = sqlContext.sql(querytmp3)\uc0\u8232   OE.registerTempTable(\cf7 "OE"\cf4 )\uc0\u8232 \u8232 \u8232 
-\f3\b \cf6 val 
-\f2\b0 \cf4 querytmp4 = \cf7 """\uc0\u8232   SELECT EID\u8232     ,MIN(Collected_Date_Time) AS 'First BC'\u8232   FROM azViews.dbo.MCPathBBPt_All_ADM(NOLOCK) AS BC\u8232   WHERE Observation IN (\u8232      'Blood Culture PCR'\u8232     ,'Blood Culture'\u8232     ,'Blood Culture GS'\u8232     ,'Blood Culture Results'\u8232     ,'Blood Culture Workup'\u8232     ,'Fungus Blood Culture Results'\u8232     ,'Fungus Blood Culture Workup''Gram Stain/Blood Culture Media'\u8232     )\u8232   AND Result NOT IN (\u8232     'Test not performed '\u8232     ,'                         Test not performed ' /** spaces before text?  */\u8232     )\u8232   GROUP BY EID\u8232   ) ON MN.EID = FB.EID\u8232                 """\u8232 
-\f3\b \cf6 val 
-\f2\b0 \cf4 FB = sqlContext.sql(querytmp4)\uc0\u8232 FB.registerTempTable(\cf7 "FB"\cf4 )\uc0\u8232 \u8232 \u8232 
-\f3\b \cf6 val 
-\f2\b0 \cf4 querytmp5 = \cf7 """\uc0\u8232   SELECT Lab.EID\u8232     ,MIN(lab.CollectedDateTime) AS 'First WBC'\u8232     ,lab.observationvalue AS WBCResult\u8232   FROM azViews.dbo.LABVISITPT_ALL_DIS AS lab(NOLOCK)\u8232   WHERE lab.[observation] = 'White Blood Cell Count'\u8232     AND lab.Institution IN (@Institution)\u8232   GROUP BY lab.EID\u8232     ,lab.observationvalue\u8232     ) ON MN.EId = FW.EID\u8232                 """\u8232 
-\f3\b \cf6 val 
-\f2\b0 \cf4 FW = sqlContext.sql(querytmp5)\uc0\u8232 FW.registerTempTable(\cf7 "FW"\cf4 )\uc0\u8232 \u8232 \u8232 
-\f3\b \cf6 val 
-\f2\b0 \cf4 querytmp6 = \cf7 """\uc0\u8232   SELECT EID AS FEID\u8232     ,universalserviceid\u8232     ,MIN(CollectedDateTime) AS LactateDate\u8232     ,observationvalue AS LactateResult\u8232   FROM azViews.dbo.LABVISITPT_ALL_DIS AS lab WITH (NOLOCK)\u8232   WHERE Institution IN (@Institution)\u8232     AND (\u8232       DischargeDateTime BETWEEN @StartDate\u8232         AND @EndDate\u8232       )\u8232     AND (\u8232       OriginalObservationId IN (\u8232          'LACBG'\u8232         ,'LACTATEPC'\u8232         ,'LACTBFL'\u8232         ,'LACTCCSF'\u8232         ,'LACTIC'\u8232         ,'LAPC'\u8232         ,'LAPCA'\u8232         ,'LACTIC'\u8232         ,'LAPC'\u8232         ,'LAPCA'\u8232         ,'LACBG'\u8232         ,'LACTCCSF'\u8232         ,'LACTIC'\u8232         ,'LAPC'\u8232         ,'LACBGS'\u8232         )\u8232       )\u8232   GROUP BY EID\u8232     ,universalserviceid\u8232     ,observationvalue\u8232   )\u8232                 """\u8232 
-\f3\b \cf6 val 
-\f2\b0 \cf4 Lc = sqlContext.sql(querytmp6)\uc0\u8232 Lc.registerTempTable(\cf7 "Lc"\cf4 )\uc0\u8232 \u8232 \u8232 
-\f3\b \cf6 val 
-\f2\b0 \cf4 querytmp7 = \cf7 """\uc0\u8232   SELECT MN.*\u8232      FB.[First BC]\u8232     ,FW.[First WBC]\u8232     ,FW.WBCResult\u8232     ,Rank() OVER (\u8232       PARTITION BY FW.EID ORDER BY (FW.[First WBC])\u8232       ) AS RankL\u8232     ,FSS.FirstSepsisDoneDate\u8232     ,SS.[SepsisScreenDone]\u8232     ,SS.SepsisDoneDate\u8232     ,OE.Orderdatetime\u8232     ,OE.OrderDescription\u8232   FROM MN\u8232   LEFT JOIN SS ON MN.EID = SS.EID\u8232   LEFT JOIN FSS ON MN.EID = FSS.EID\u8232   LEFT JOIN OE ON MN.EID = OE.EID\u8232   LEFT JOIN FB ON MN.EID = FB.EID\u8232   LEFT JOIN FW ON MN.EID = FW.EID\u8232                 """\u8232 
-\f3\b \cf6 val 
-\f2\b0 \cf4 FINAL = sqlContext.sql(querytmp7)\uc0\u8232 FINAL.registerTempTable(\cf7 "FINAL"\cf4 )\uc0\u8232 \u8232 \u8232 
-\f3\b \cf6 val 
-\f2\b0 \cf4 querytmp8 = \cf7 """\uc0\u8232   SELECT *\u8232   FROM FINAL\u8232   WHERE RankL = 1\u8232                 """\u8232 
-\f3\b \cf6 val 
-\f2\b0 \cf4 #TEMP1 = sqlContext.sql(querytmp8)\uc0\u8232 #TEMP1.registerTempTable(\cf7 "#TEMP1"\cf4 )\uc0\u8232 \u8232 \u8232 
-\f3\b \cf6 val 
-\f2\b0 \cf4 querytmp9 = \cf7 """\uc0\u8232   SELECT  PRA.[EID] as PEID\u8232     ,ad.AccountNumber AS MEDAccount ,MIN(pra.AdministrationDateTime) AS 'First Abx Admin Date',\u8232     Rank () OVER (Partition by PRA.EID ORDER by PRA.AdministrationDateTime )as MEDRANK\u8232     ,dpd.TypeName AS Drug_Type_Description\u8232     ,dpd.Name as DrugName\u8232   FROM #TEMP1\u8232   INNER join  sjhsPHA.dbo.PhaRxAdministrations pra(NOLOCK)\u8232     On 	#TEMP1.EID=PRA.EID\u8232   INNER JOIN sjhsRCS.dbo.AbstractData ad(NOLOCK) ON pra.SourceID = ad.SourceID\u8232     AND pra.VisitID = ad.VisitID\u8232   LEFT JOIN sjhsOE.dbo.PhaRx pr(NOLOCK) ON pra.SourceID = pr.SourceID\u8232     AND pra.PrescriptionID = pr.PrescriptionID\u8232     AND pra.VisitID = pr.VisitID\u8232   LEFT JOIN sjhsPHA.dbo.PhaRxMedications prm(NOLOCK) ON pr.SourceID = prm.SourceID\u8232     AND pr.PrescriptionID = prm.PrescriptionID\u8232   INNER JOIN sjhsOE.dbo.DPhaDrugData dpd(NOLOCK) ON prm.SourceID = dpd.SourceID\u8232     AND prm.DrugID = dpd.DrugID COLLATE SQL_Latin1_General_CP1_CS_AS\u8232   WHERE dpd.typeID IN (\u8232      '08:12.02'\u8232     ,'08:12.28'\u8232     ,'08:14.92'\u8232     ,'08:16.92'\u8232     ,'08:30.92'\u8232     ,'08:16.04'\u8232     ,'08:18.92'\u8232     ,'08:14.08'\u8232     ,'08:12.06'\u8232     ,'08:12.08'\u8232     ,'08:14.16'\u8232     ,'08:12.12'\u8232     ,'08:12.07'\u8232     ,'08:18.24'\u8232     ,'08:18.32'\u8232     ,'08:12.16'\u8232     ,'08:14.28'\u8232     ,'08:12.18'\u8232     ,'08:12.20'\u8232     ,'08:12.24'\u8232     )\u8232   GROUP BY PRA.EID\u8232     ,ad.AccountNumber\u8232     ,pra.AdministrationDateTime\u8232     ,dpd.Name\u8232     ,dpd.TypeName\u8232     )\u8232                 """\u8232 
-\f3\b \cf6 val 
-\f2\b0 \cf4 MEDMAR = sqlContext.sql(querytmp9)\uc0\u8232 MEDMAR.registerTempTable(\cf7 "MEDMAR"\cf4 )\uc0\u8232 \u8232 \u8232 
-\f3\b \cf6 val 
-\f2\b0 \cf4 querytmp10 = \cf7 """\uc0\u8232   SELECT *\u8232   FROM MEDMAR\u8232   WHERE MEDMAR.MEDRANK=1\u8232                 """\u8232 
-\f3\b \cf6 val 
-\f2\b0 \cf4 #MED1 = sqlContext.sql(querytmp10)\uc0\u8232   #MED1.registerTempTable(\cf7 "#MED1"\cf4 )\uc0\u8232 \u8232 \u8232 
-\f3\b \cf6 val 
-\f2\b0 \cf4 querytmp12 = \cf7 """\uc0\u8232   SELECT  *,\u8232     CASE\u8232       WHEN (#Med1.[First Abx Admin Date]) <= dateadd(hh, 3, (\u8232         CASE\u8232           WHEN #TEMP1.[ED Received Date Time] IS NULL\u8232             THEN #TEMP1.[ED Received Date Time]\u8232           ELSE #TEMP1.[ED Received Date Time]\u8232           END\u8232       ))\u8232       THEN 'Y'\u8232     ELSE 'N'\u8232     END\u8232   AS ArrivalAbx\u8232   FROM #TEMP1\u8232   INNER JOIN #MED1 On #TEMP1.EID=#MED1.PEID\u8232                  """\u8232 
-\f3\b \cf6 val 
-\f2\b0 \cf4 #MEDF = sqlContext.sql(querytmp12)\uc0\u8232 #MEDF.registerTempTable(\cf7 "#MEDF"\cf4 )\uc0\u8232 \u8232 \u8232 
-\f3\b \cf6 val 
-\f2\b0 \cf4 querytmp13 = \cf7 """\uc0\u8232   SELECT *\u8232     ,RANK() OVER (\u8232       PARTITION BY FEID ORDER BY [LactateDate]\u8232       ) AS Rn\u8232   FROM #MEDF\u8232   LEFT JOIN Lc ON #MEDF.EID = Lc.FEID\u8232                  """\u8232 
-\f3\b \cf6 val 
-\f2\b0 \cf4 LAC = sqlContext.sql(querytmp13)\uc0\u8232 LAC.registerTempTable(\cf7 "LAC"\cf4 )\uc0\u8232 \u8232 \u8232 
-\f3\b \cf6 val 
-\f2\b0 \cf4 querytmp14 = \cf7 """\uc0\u8232   SELECT *\u8232   FROM LAC\u8232   WHERE Rn IN (1 ,2)\u8232                  """\u8232 
-\f3\b \cf6 val 
-\f2\b0 \cf4 #LACT = sqlContext.sql(querytmp14)\uc0\u8232 #M#LACT.registerTempTable(\cf7 "#LACT"\cf4 )\uc0\u8232 \u8232 \u8232 
-\f3\b \cf6 val 
-\f2\b0 \cf4 querytmp15 = \cf7 """\uc0\u8232   SELECT a.*\u8232     ,B.LactateDate AS SecoundLactDate\u8232     ,B.LactateResult AS SecoundLactateResult\u8232   FROM #LACT AS a\u8232   LEFT JOIN #LACT AS b ON a.EID = B.EID\u8232     AND b.Rn = 2\u8232   WHERE A.Rn = 1\u8232                  """\u8232 
-\f3\b \cf6 val 
-\f2\b0 \cf4 #LACFIN = sqlContext.sql(querytmp15)\uc0\u8232 #LACFIN.registerTempTable(\cf7 "#LACFIN"\cf4 )\uc0\u8232 \u8232 \u8232 
-\f3\b \cf6 val 
-\f2\b0 \cf4 querytmp16 = \cf7 """\uc0\u8232   SELECT EID\u8232     ,MIN([Activity Date/Time]) AS ActivityDate\u8232     ,DIS.query\u8232     ,CASE DIS.Query\u8232       WHEN 'NVSBPS'\u8232         THEN Dis.[Query Text]\u8232       WHEN 'NVSBPD'\u8232         THEN Dis.[Query Text]\u8232       WHEN 'NVSTEMP'\u8232         THEN Dis.[Query Text]\u8232       WHEN 'NRRRC'\u8232         THEN Dis.[Query Text]\u8232       WHEN 'NVSPULSE'\u8232         THEN Dis.[Query Text]\u8232       END AS EDVitalSigns\u8232     ,CASE DIS.Query\u8232       WHEN 'NVSBPS'\u8232         THEN DIS.[Query Text 2]\u8232       WHEN 'NVSBPD'\u8232         THEN DIS.[Query Text 2]\u8232       WHEN 'NVSTEMP'\u8232         THEN DIS.[Query Text 2]\u8232       WHEN 'NRRRC'\u8232         THEN DIS.[Query Text 2]\u8232       WHEN 'NVSPULSE'\u8232         THEN DIS.[Query Text 2]\u8232       END AS EDVitalsValues\u8232   FROM azviews.dbo.QryIntVisitPT_All_Activity AS DIS WITH (NOLOCK)\u8232   WHERE DIS.Query IN (\u8232     'NVSBPS'\u8232     ,'NVSBPD'\u8232     ,'NVSTEMP'\u8232     ,'NRRRC'\u8232     ,'NVSPULSE'\u8232     )\u8232     AND DIS.INSTITUTION IN (@Institution)\u8232   GROUP BY Dis.[Query Text]\u8232     ,Dis.[Query Text 2]\u8232     ,DIS.[Activity Date/Time]\u8232     ,DIS.Query\u8232     ,DIS.Account\u8232     ,DIs.EID\u8232                  """\u8232 
-\f3\b \cf6 val 
-\f2\b0 \cf4 DIS = sqlContext.sql(querytmp16)\uc0\u8232 DIS.registerTempTable(\cf7 "DIS"\cf4 )\uc0\u8232 \u8232 \u8232 
-\f3\b \cf6 val 
-\f2\b0 \cf4 querytmp17 = \cf7 """\uc0\u8232   SELECT #LACFIN.*\u8232     ,DIS.EDVitalSigns\u8232     ,DIS.EDVitalsValues\u8232     ,ROW_NUMBER() OVER (\u8232       PARTITION BY DIS.EID\u8232       ,DIS.query ORDER BY DIS.[ActivityDate] ASC\u8232       ) rn1\u8232   FROM #LACFIN\u8232   INNER JOIN DIS ON dis.EID = #LACFIN.EID\u8232                  """\u8232 
-\f3\b \cf6 val 
-\f2\b0 \cf4 #final1 = sqlContext.sql(querytmp17)\uc0\u8232 #final1.registerTempTable(\cf7 "#final1"\cf4 )\uc0\u8232 \u8232 \u8232 
-\f3\b \cf6 val 
-\f2\b0 \cf4 querytmp18 = \cf7 """\uc0\u8232   SELECT *\u8232   FROM #final1\u8232   WHERE rn1 = 1\u8232                  """\u8232 
-\f3\b \cf6 val 
-\f2\b0 \cf4 acc = sqlContext.sql(querytmp18)\uc0\u8232 acc.registerTempTable(\cf7 "acc"\cf4 )\uc0\u8232 \u8232 \u8232 
-\f3\b \cf6 val 
-\f2\b0 \cf4 querytmp19 = \cf7 """\uc0\u8232   SELECT *\u8232   FROM acc\u8232   PIVOT(MAX([EDVITALSVALUES]) FOR [EDVitalSigns] IN (\u8232      [Temperature]\u8232     ,[Blood Pressure Diastolic]\u8232     ,[Blood Pressure Systolic]\u8232     ,[Pulse Rate (Adult)]\u8232     ,[Respiratory Rate]\u8232     )) AS PVT\u8232                  """\u8232 
-\f3\b \cf6 val 
-\f2\b0 \cf4 #GrandFinal = sqlContext.sql(querytmp19)\uc0\u8232 #GrandFinal.registerTempTable(\cf7 "#GrandFinal"\cf4 )\uc0\u8232 \u8232 \u8232 
-\f3\b \cf6 val 
-\f2\b0 \cf4 querytmp20 = \cf7 """\uc0\u8232   SELECT *\u8232     ,convert(varchar(30), (datediff(mi, GF.[FirstSepsisDoneDate], GF.OrderDatetime)/ 60))+ ':' +\u8232      convert(varchar(30), (datediff(mi, GF.[FirstSepsisDoneDate], GF.OrderDatetime)% 60)) AS ElapsedTime\u8232     ,CASE\u8232       WHEN (GF.[First Abx Admin Date] IS NULL)\u8232         OR (GF.OrderDatetime IS NULL)\u8232         THEN 'NULL'\u8232         WHEN ((DATEDIFF(mi, GF.[First Abx Admin Date], GF.OrderDatetime) <=180) OR\u8232         (DATEDIFF(mi, GF.[First Abx Admin Date], GF.OrderDatetime) <=-1440) )\u8232         THEN 'Y' ELSE 'N'\u8232         END AS 'ABX within 3hr of Sepsis OS'\u8232     ,CASE\u8232       WHEN (GF.[First BC] IS NULL)\u8232         OR (GF.[First Abx Admin Date] IS NULL)\u8232         THEN 'NULL'\u8232       ELSE CASE\u8232         WHEN GF.[First BC] < GF.[First Abx Admin Date]\u8232           THEN 'Y'\u8232         WHEN GF.[First BC] > GF.[First Abx Admin Date]\u8232           THEN 'N'\u8232         END\u8232       END AS 'BC done prior to ABX Admin'\u8232     ,CASE\u8232       WHEN (GF.[LactateDate] IS NULL)\u8232         OR (GF.OrderDateTime IS NULL)\u8232         THEN 'NULL'\u8232           WHEN ((DATEDIFF(mi, GF.[LactateDate], GF.[OrderDatetime]) <=180) OR\u8232           (DATEDIFF(mi, GF.[LactateDate], GF.[OrderDatetime]) <=-360))\u8232           THEN 'Y' ELSE 'N'\u8232           END AS 'Lac within 3hr of Sepsis OS'\u8232   FROM #GrandFinal AS GF\u8232   LEFT JOIN (\u8232     ) Sub ON GF.EID = Sub.SEID\u8232   WHERE rns = 1\u8232     OR RNS IS NULL\u8232                  """\u8232 
-\f3\b \cf6 val 
-\f2\b0 \cf4 Report = sqlContext.sql(querytmp20)\uc0\u8232 Report.registerTempTable(\cf7 "Report"\cf4 )\uc0\u8232 \
+\f0\i\fs24 \cf2 \cb3 /** hard-coding parameters since query is from a stored procedure\uc0\u8232 
+\f1\b @StartDate 
+\f0\b0 = "2016-01-01 00:00:00.0"\uc0\u8232 
+\f1\b @EndDate 
+\f0\b0 = "2016-01-31 23:59:00.0"\uc0\u8232 
+\f1\b @Institution 
+\f0\b0 = "MHR"\uc0\u8232 
+\f1\b @ServicingFacility 
+\f0\b0 = "SMM"\uc0\u8232   */\u8232 \u8232 \u8232 /** table definitions */\u8232 \u8232 /** val hdfs_path = "hdfs://10.0.100.252:8020/user/hdfs/stjoe/amalga/sqooped/2016/09/01" */\u8232 
+\f2\i0\b \cf4 val 
+\f3\b0 \cf5 hdfs_path = \cf6 "file:///Users/jimmarczyk/01/"\uc0\u8232 \u8232 \u8232 
+\f2\b \cf4 val 
+\f3\b0 \cf5 VISITPT_ALL_DIS = sqlContext.read.parquet(\cf6 s"
+\f2\b \cf7 $
+\f3\b0 \cf5 hdfs_path\cf6 /azViews/VISITPT_ALL_DIS/*.parquet"\cf5 )\uc0\u8232 VISITPT_ALL_DIS.registerTempTable(\cf6 "VISITPT_ALL_DIS"\cf5 )\uc0\u8232 \u8232 
+\f2\b \cf4 val 
+\f3\b0 \cf5 QryIntVisitPT_All_Activity = sqlContext.read.parquet(\cf6 s"
+\f2\b \cf7 $
+\f3\b0 \cf5 hdfs_path\cf6 /azViews/QryIntVisitPT_All_Activity/*.parquet"\cf5 )\uc0\u8232 QryIntVisitPT_All_Activity.registerTempTable(\cf6 "QryIntVisitPT_All_Activity"\cf5 )\uc0\u8232 \u8232 
+\f2\b \cf4 val 
+\f3\b0 \cf5 OrderVisitPT_All_Activity = sqlContext.read.parquet(\cf6 s"
+\f2\b \cf7 $
+\f3\b0 \cf5 hdfs_path\cf6 /azViews/OrderVisitPT_All_Activity/*.parquet"\cf5 )\uc0\u8232 OrderVisitPT_All_Activity.registerTempTable(\cf6 "OrderVisitPT_All_Activity"\cf5 )\uc0\u8232 \u8232 
+\f2\b \cf4 val 
+\f3\b0 \cf5 Dictionary_OrderSetDetails_Lookup = sqlContext.read.parquet(\cf6 s"
+\f2\b \cf7 $
+\f3\b0 \cf5 hdfs_path\cf6 /Dictionary_OrderSetDetails_Lookup/*.parquet"\cf5 )\uc0\u8232 Dictionary_OrderSetDetails_Lookup.registerTempTable(\cf6 "Dictionary_OrderSetDetails_Lookup"\cf5 )\uc0\u8232 \u8232 
+\f2\b \cf4 val 
+\f3\b0 \cf5 MCPathBBPt_All_ADM = sqlContext.read.parquet(\cf6 s"
+\f2\b \cf7 $
+\f3\b0 \cf5 hdfs_path\cf6 /MCPathBBPt_All_ADM/*.parquet"\cf5 )\uc0\u8232 MCPathBBPt_All_ADM.registerTempTable(\cf6 "MCPathBBPt_All_ADM"\cf5 )\uc0\u8232 \u8232 
+\f2\b \cf4 val 
+\f3\b0 \cf5 LABVISITPT_ALL_DIS = sqlContext.read.parquet(\cf6 s"
+\f2\b \cf7 $
+\f3\b0 \cf5 hdfs_path\cf6 /LABVISITPT_ALL_DIS/*.parquet"\cf5 )\uc0\u8232 LABVISITPT_ALL_DIS.registerTempTable(\cf6 "LABVISITPT_ALL_DIS"\cf5 )\uc0\u8232 \u8232 
+\f2\b \cf4 val 
+\f3\b0 \cf5 ABS_DG1601 = sqlContext.read.parquet(\cf6 s"
+\f2\b \cf7 $
+\f3\b0 \cf5 hdfs_path\cf6 /azABS/ABS_DG1601/*.parquet"\cf5 )\uc0\u8232 ABS_DG1601.registerTempTable(\cf6 "ABS_DG1601"\cf5 )\uc0\u8232 \u8232 
+\f2\b \cf4 val 
+\f3\b0 \cf5 Encounter_Patient_MDR = sqlContext.read.parquet(\cf6 s"
+\f2\b \cf7 $
+\f3\b0 \cf5 hdfs_path\cf6 /sjhsEncounterData/Encounter_Patient_MDR/*.parquet"\cf5 )\uc0\u8232 Encounter_Patient_MDR.registerTempTable(\cf6 "Encounter_Patient_MDR"\cf5 )\uc0\u8232 \u8232 
+\f2\b \cf4 val 
+\f3\b0 \cf5 AdmVitalSigns = sqlContext.read.parquet(\cf6 s"
+\f2\b \cf7 $
+\f3\b0 \cf5 hdfs_path\cf6 /sjhsADM/AdmVitalSigns/*.parquet"\cf5 )\uc0\u8232 AdmVitalSigns.registerTempTable(\cf6 "AdmVitalSigns"\cf5 )\uc0\u8232 \u8232 
+\f2\b \cf4 val 
+\f3\b0 \cf5 EdmPatientStatusEventHistory = sqlContext.read.parquet(\cf6 s"
+\f2\b \cf7 $
+\f3\b0 \cf5 hdfs_path\cf6 /sjhsEDM/EdmPatientStatusEventHistory/*.parquet"\cf5 )\uc0\u8232 EdmPatientStatusEventHistory.registerTempTable(\cf6 "EdmPatientStatusEventHistory"\cf5 )\uc0\u8232 \u8232 
+\f2\b \cf4 val 
+\f3\b0 \cf5 ADT_Lookup_Provider = sqlContext.read.parquet(\cf6 s"
+\f2\b \cf7 $
+\f3\b0 \cf5 hdfs_path\cf6 /azADT/ADT_Lookup_Provider/*.parquet"\cf5 )\uc0\u8232 ADT_Lookup_Provider.registerTempTable(\cf6 "ADT_Lookup_Provider"\cf5 )\uc0\u8232 \u8232 
+\f2\b \cf4 val 
+\f3\b0 \cf5 PhaRxAdministrations = sqlContext.read.parquet(\cf6 s"
+\f2\b \cf7 $
+\f3\b0 \cf5 hdfs_path\cf6 /sjhsPHA/PhaRxAdministrations/*.parquet"\cf5 )\uc0\u8232 PhaRxAdministrations.registerTempTable(\cf6 "PhaRxAdministrations"\cf5 )\uc0\u8232 \u8232 
+\f2\b \cf4 val 
+\f3\b0 \cf5 AbstractData = sqlContext.read.parquet(\cf6 s"
+\f2\b \cf7 $
+\f3\b0 \cf5 hdfs_path\cf6 /sjhsRCS/AbstractData/*.parquet"\cf5 )\uc0\u8232 AbstractData.registerTempTable(\cf6 "AbstractData"\cf5 )\uc0\u8232 \u8232 
+\f2\b \cf4 val 
+\f3\b0 \cf5 PhaRx = sqlContext.read.parquet(\cf6 s"
+\f2\b \cf7 $
+\f3\b0 \cf5 hdfs_path\cf6 /sjhsOE/PhaRx/*.parquet"\cf5 )\uc0\u8232 PhaRx.registerTempTable(\cf6 "PhaRx"\cf5 )\uc0\u8232 \u8232 
+\f2\b \cf4 val 
+\f3\b0 \cf5 PhaRxMedications = sqlContext.read.parquet(\cf6 s"
+\f2\b \cf7 $
+\f3\b0 \cf5 hdfs_path\cf6 /sjhsPHA/PhaRxMedications/*.parquet"\cf5 )\uc0\u8232 PhaRxMedications.registerTempTable(\cf6 "PhaRxMedications"\cf5 )\uc0\u8232 \u8232 
+\f2\b \cf4 val 
+\f3\b0 \cf5 DPhaDrugData = sqlContext.read.parquet(\cf6 s"
+\f2\b \cf7 $
+\f3\b0 \cf5 hdfs_path\cf6 /sjhsOE/DPhaDrugData/*.parquet"\cf5 )\uc0\u8232 DPhaDrugData.registerTempTable(\cf6 "DPhaDrugData"\cf5 )\uc0\u8232 \u8232 \u8232 
+\f0\i \cf2 /** test the temp table below  */\uc0\u8232 \u8232 
+\f2\i0\b \cf4 val 
+\f3\b0 \cf5 querytmp0 = \cf6 """\uc0\u8232   SELECT DISTINCT DIS.EID\u8232     ,DIS.Institution\u8232     ,DIS.ServicingFacility\u8232     ,DIS.MRN\u8232     ,DIS.Account\u8232     ,DIS.Name AS Patient_Name\u8232     ,DIS.AdmitDateTime\u8232     ,DIS.AdmitDate\u8232     ,DIS.AdmitTime\u8232     ,DIS.Age\u8232     ,DIS.Sex AS Gender\u8232     ,DIS.DxCodes\u8232     ,DIS.DRG\u8232     ,DIS.DischargeDateTime\u8232     ,DIS.AttendingMDName AS Attending_Physician\u8232     ,EN.ERPhys\u8232     ,ERMD.FirstName +' '+ERMD.LastName AS ED_Physician\u8232     ,DIS.AdmitComplaint AS Reason_for_Visit\u8232     ,DIS.DischargeDisposition\u8232     ,DIS.ERAdmitDtTm AS ED_Received_Date_Time\u8232     ,AVS.ArrivalDateTime AS ED_Arrival_Date_Time\u8232     ,DF.POA\u8232     ,CASE\u8232       WHEN DIS.DischargeDisposition = 'EXP'\u8232         THEN 'Yes'\u8232       ELSE 'No'\u8232       END AS Expired\u8232     ,EN.MortalityRisk AS AprDRGRiskMortality\u8232     ,EN.Severity1 AS AprDRGSeverity\u8232     ,EDT.StartDateTime AS TRIAGEDATETIME\u8232     /** ,DATEDIFF(MI, AVS.ArrivalDateTime, EDT.StartDateTime) AS Wait_Time(MM) */\u8232     ,DATEDIFF(to_date(EDT.StartDateTime), to_date(AVS.ArrivalDateTime)) AS Wait_Time\u8232     ,DIS.LOS\u8232     ,DIS.Total_Cost\u8232     ,DIS.DAYSSINCELASTIPVISIT\u8232     ,DIS.LASTIPVISITDTTM\u8232     ,DIS.PreviousDRG\u8232   FROM VISITPT_ALL_DIS DIS\u8232   INNER JOIN ABS_DG1601 DF ON DIS.EID = DF.EID\u8232   INNER JOIN Encounter_Patient_MDR EN ON DIS.EID = EN.EID\u8232   LEFT JOIN AdmVitalSigns AVS ON EN.EID = AVS.EID\u8232   LEFT JOIN EdmPatientStatusEventHistory EDT ON EN.EID = EDT.EID\u8232     AND EDT.EventID = 'TRIAGE'\u8232   LEFT JOIN ADT_Lookup_Provider ERMD On EN.ERPhys = ERMD.Mnemonic\u8232     AND EN.Institution = ERMD.Ministry\u8232   WHERE DIS.PatientType = 'IN'\u8232     AND DIS.AccountStatus = 'DIS'\u8232     AND DIS.DischargeDateTime BETWEEN "2016-01-01 00:00:00.0"\u8232     AND "2016-01-31 23:59:00.0"\u8232     AND DIS.Institution IN ("MHR")\u8232     AND DIS.ServicingFacility IN ("SMM")\u8232     AND DF.DxCode IN (\u8232        '785.52'\u8232       ,'995.91'\u8232       ,'995.92'\u8232       ,'R65.21'\u8232       ,'A41.9'\u8232       ,'R65.20' /** NEW ICD10 */\u8232       ,'A021'\u8232       ,'A227'\u8232       ,'A267'\u8232       ,'A327'\u8232       ,'A400'\u8232       ,'A401'\u8232       ,'A403'\u8232       ,'A408'\u8232       ,'A409'\u8232       ,'A4101'\u8232       ,'A4102'\u8232       ,'A411'\u8232       ,'A412'\u8232       ,'A413'\u8232       ,'A414'\u8232       ,'A4150'\u8232       ,'A4151'\u8232       ,'A4152'\u8232       ,'A4153'\u8232       ,'A4159'\u8232       ,'A4181'\u8232       ,'A4189'\u8232       ,'A419'\u8232       ,'A427'\u8232       ,'A5486'\u8232       ,'B377'\u8232       ,'R6520'\u8232       ,'R6521')\u8232                 """\u8232 
+\f2\b \cf4 val 
+\f3\b0 \cf5 MN = sqlContext.sql(querytmp0)\uc0\u8232 MN.registerTempTable(\cf6 "MN"\cf5 )\uc0\u8232 \u8232 \u8232 
+\f2\b \cf4 val 
+\f3\b0 \cf5 querytmp1 = \cf6 """\uc0\u8232   SELECT EID\u8232     ,Min([Activity Date/Time]) AS SepsisDoneDate\u8232     ,'Y' AS [SepsisScreenDone]\u8232   FROM QryIntVisitPT_All_Activity AS DIS WITH\u8232   WHERE DIS.IntervenID IN (\u8232        '0250530'\u8232       ,'0250540'\u8232       ,'0300590'\u8232       ,'0301105'\u8232       ,'0300895'\u8232       ,'0301100'\u8232       ,'0150000'\u8232       ,'0300330'\u8232       ,'0150005')\u8232     AND Ctr = '1'\u8232     AND DIS.Query IN (\u8232        'NSEPINCR'\u8232       ,'NSEPSECA'\u8232       ,'NSEPSIRS01'\u8232       ,'NSEPSECB'\u8232       ,'NSEPPOS'\u8232       ,'NSEPPHY'\u8232       ,'NSEPOS01'\u8232       ,'NSEPOD01'\u8232       ,'NSEPSECC'\u8232       ,'NSEPSEV'\u8232       ,'NSEPNIN'\u8232       ,'NPEDSETT\u8232       ,'NPEDSETI'\u8232       ,'NPEDSETH'\u8232       ,'NPEDSETR'\u8232       ,'NPEDSETC'\u8232       ,'NPEDSETN'\u8232       ,'ESPINFP'\u8232       ,'ESPFVR'\u8232       ,'ESPNEURO'\u8232       ,'NSEPNPOS'\u8232       ,'ESPPOSTV'\u8232       ,'NSEPOD'\u8232       ,'NSEPSIRS'\u8232     GROUP BY EID\u8232     ) ON MN.EID = SS.EID\u8232                 """\u8232 
+\f2\b \cf4 val 
+\f3\b0 \cf5 SS = sqlContext.sql(querytmp1)\uc0\u8232 SS.registerTempTable(\cf6 "SS"\cf5 )\uc0\u8232 \u8232 \u8232 
+\f2\b \cf4 val 
+\f3\b0 \cf5 querytmp2 = \cf6 """\uc0\u8232   SELECT EID\u8232     ,Min([Activity Date/Time]) AS FirstSepsisDoneDate\u8232   FROM QryIntVisitPT_All_Activity AS DIS1 WITH\u8232   WHERE DIS1.Assessment IN (\u8232       'NU.EESEPSISSC03'\u8232       ,'ED.EEADTRIAGE14'\u8232       ,'ED.TSTSEPSIS'\u8232       ,'ED.TSTSEPSIS1'\u8232       ,'NU.EESEPSISSC02'\u8232       ,'NU.EESEPSISSCRN'\u8232       ,'NUR.RRTSEPSIS'\u8232       ,'NUR.RRTSEPSIS1'\u8232       ,'NUR.SEPSIS'\u8232       ,'NUR.SEPSIS2'\u8232       ,'NU.EESEPSISSC01'\u8232       ,'NUR.SEPSIS1'\u8232       )\u8232     AND DIS1.Query = 'NSEPPOS'\u8232     AND Dis1.[Query Text 2] LIKE '%Positive%'\u8232   GROUP BY EID\u8232   ) ON MN.EID = FSS.EID\u8232                 """\u8232 
+\f2\b \cf4 val 
+\f3\b0 \cf5 FSS = sqlContext.sql(querytmp2)\uc0\u8232 FSS.registerTempTable(\cf6 "FSS"\cf5 )\uc0\u8232 \u8232 \u8232 
+\f2\b \cf4 val 
+\f3\b0 \cf5 querytmp3 = \cf6 """\uc0\u8232   SELECT ORA.EID\u8232     ,ORA.OrderDateTime\u8232     ,ORD.Description AS OrderDescription\u8232   FROM OrderVisitPT_All_Activity AS ORA\u8232   LEFT JOIN Dictionary_OrderSetDetails_Lookup AS ORD ON ORA.SourceID = ORD.SourceID\u8232     AND ORA.OrderedProcedure = ORD.Code\u8232   WHERE ORA.OrderedProcedure IN (\u8232       'EEEDPSEP1',\u8232       'NUCCSEPS1',\u8232       'NUPEDSEPS1',\u8232       'NUSDSEPS1',\u8232       'NUQEDNSP1',\u8232       'NUREDNSP1',\u8232       'NUSEDNSP1',\u8232       'NUKEDPSM1',\u8232       'NUPEDPSM1',\u8232       'NUREDPSM1',\u8232       'NUSEDPSM1',\u8232       'NUQEDPSM1',\u8232       'NUMEDNSS1',\u8232       'EEEDNFVSP1',\u8232       'SUMEDSEP1',\u8232       'SUEDSEPS1',\u8232       'SUEDPSEP1',\u8232       'SUCNVEGT2',\u8232       'SUCNVSEP3',\u8232       'SUMEDSSA3',\u8232       'SUCCSEP1',\u8232       'SUEDPSEP1',\u8232       'SUNBJSEP1',\u8232       'EEEDPSEP1',\u8232       'TUEDSEPS1',\u8232       'TUPEDSSE2',\u8232       'EEDSEPS1',\u8232       'EBCNVPSEP1',\u8232       'EECNVPSEP1',\u8232       'EEPEDSEP1',\u8232       'EIEDPSEP1',\u8232       'NQEDSEPPD2',\u8232       'NUKEDNSP1',\u8232       'NUKEDSEPS2',\u8232       'NUPEDNSP1',\u8232       'NUPEDSEPS2',\u8232       'NUQEDSEPS3',\u8232       'NUREDSEPS2',\u8232       'NUSEDNSP2',\u8232       'SIEDPSEP1',\u8232       'SIEDSEPS1',\u8232       'STEDPSEP1',\u8232       'STEDSEPS1',\u8232       'SUCNVPSEP1',\u8232       'SUMETSEP1',\u8232       'SXEDFSAY1',\u8232       'SXEDPSEP1',\u8232       'SXEDSEPS1',\u8232       'TBMEDSEP1',\u8232       'TIEDSEPS1',\u8232       'TUMEDSEP1',\u8232       'TUPEDSEP1',\u8232       'TUPEDSSE2',\u8232       'TPPEDSEP1',\u8232       'STEDSEPS2',\u8232       'SIEDSEPS2',\u8232       'SXEDSEPS2',\u8232       'SUCCSEP2'\u8232       )\u8232   ) ON MN.EID = OE.EID\u8232                 """\u8232 
+\f2\b \cf4 val 
+\f3\b0 \cf5 OE = sqlContext.sql(querytmp3)\uc0\u8232   OE.registerTempTable(\cf6 "OE"\cf5 )\uc0\u8232 \u8232 \u8232 
+\f2\b \cf4 val 
+\f3\b0 \cf5 querytmp4 = \cf6 """\uc0\u8232   SELECT EID\u8232     ,MIN(Collected_Date_Time) AS 'First BC'\u8232   FROM MCPathBBPt_All_ADM AS BC\u8232   WHERE Observation IN (\u8232      'Blood Culture PCR'\u8232     ,'Blood Culture'\u8232     ,'Blood Culture GS'\u8232     ,'Blood Culture Results'\u8232     ,'Blood Culture Workup'\u8232     ,'Fungus Blood Culture Results'\u8232     ,'Fungus Blood Culture Workup''Gram Stain/Blood Culture Media'\u8232     )\u8232   AND Result NOT IN (\u8232     'Test not performed '\u8232     ,'                         Test not performed ' /** spaces before text?  */\u8232     )\u8232   GROUP BY EID\u8232   ) ON MN.EID = FB.EID\u8232                 """\u8232 
+\f2\b \cf4 val 
+\f3\b0 \cf5 FB = sqlContext.sql(querytmp4)\uc0\u8232 FB.registerTempTable(\cf6 "FB"\cf5 )\uc0\u8232 \u8232 \u8232 
+\f2\b \cf4 val 
+\f3\b0 \cf5 querytmp5 = \cf6 """\uc0\u8232   SELECT Lab.EID\u8232     ,MIN(lab.CollectedDateTime) AS 'First WBC'\u8232     ,lab.observationvalue AS WBCResult\u8232   FROM LABVISITPT_ALL_DIS AS lab\u8232   WHERE lab.[observation] = 'White Blood Cell Count'\u8232     AND lab.Institution IN ("MHR")\u8232   GROUP BY lab.EID\u8232     ,lab.observationvalue\u8232     ) ON MN.EId = FW.EID\u8232                 """\u8232 
+\f2\b \cf4 val 
+\f3\b0 \cf5 FW = sqlContext.sql(querytmp5)\uc0\u8232 FW.registerTempTable(\cf6 "FW"\cf5 )\uc0\u8232 \u8232 \u8232 
+\f2\b \cf4 val 
+\f3\b0 \cf5 querytmp6 = \cf6 """\uc0\u8232   SELECT EID AS FEID\u8232     ,universalserviceid\u8232     ,MIN(CollectedDateTime) AS LactateDate\u8232     ,observationvalue AS LactateResult\u8232   FROM LABVISITPT_ALL_DIS AS lab WITH\u8232   WHERE Institution IN ("MHR")\u8232     AND (\u8232       DischargeDateTime BETWEEN "2016-01-01 00:00:00.0"\u8232         AND "2016-01-31 23:59:00.0"\u8232       )\u8232     AND (\u8232       OriginalObservationId IN (\u8232          'LACBG'\u8232         ,'LACTATEPC'\u8232         ,'LACTBFL'\u8232         ,'LACTCCSF'\u8232         ,'LACTIC'\u8232         ,'LAPC'\u8232         ,'LAPCA'\u8232         ,'LACTIC'\u8232         ,'LAPC'\u8232         ,'LAPCA'\u8232         ,'LACBG'\u8232         ,'LACTCCSF'\u8232         ,'LACTIC'\u8232         ,'LAPC'\u8232         ,'LACBGS'\u8232         )\u8232       )\u8232   GROUP BY EID\u8232     ,universalserviceid\u8232     ,observationvalue\u8232   )\u8232                 """\u8232 
+\f2\b \cf4 val 
+\f3\b0 \cf5 Lc = sqlContext.sql(querytmp6)\uc0\u8232 Lc.registerTempTable(\cf6 "Lc"\cf5 )\uc0\u8232 \u8232 \u8232 
+\f2\b \cf4 val 
+\f3\b0 \cf5 querytmp7 = \cf6 """\uc0\u8232   SELECT MN.*\u8232      FB.[First BC]\u8232     ,FW.[First WBC]\u8232     ,FW.WBCResult\u8232     ,Rank() OVER (\u8232       PARTITION BY FW.EID ORDER BY (FW.[First WBC])\u8232       ) AS RankL\u8232     ,FSS.FirstSepsisDoneDate\u8232     ,SS.[SepsisScreenDone]\u8232     ,SS.SepsisDoneDate\u8232     ,OE.Orderdatetime\u8232     ,OE.OrderDescription\u8232   FROM MN\u8232   LEFT JOIN SS ON MN.EID = SS.EID\u8232   LEFT JOIN FSS ON MN.EID = FSS.EID\u8232   LEFT JOIN OE ON MN.EID = OE.EID\u8232   LEFT JOIN FB ON MN.EID = FB.EID\u8232   LEFT JOIN FW ON MN.EID = FW.EID\u8232                 """\u8232 
+\f2\b \cf4 val 
+\f3\b0 \cf5 FINAL = sqlContext.sql(querytmp7)\uc0\u8232 FINAL.registerTempTable(\cf6 "FINAL"\cf5 )\uc0\u8232 \u8232 \u8232 
+\f2\b \cf4 val 
+\f3\b0 \cf5 querytmp8 = \cf6 """\uc0\u8232   SELECT *\u8232   FROM FINAL\u8232   WHERE RankL = 1\u8232                 """\u8232 
+\f2\b \cf4 val 
+\f3\b0 \cf5 #TEMP1 = sqlContext.sql(querytmp8)\uc0\u8232 #TEMP1.registerTempTable(\cf6 "#TEMP1"\cf5 )\uc0\u8232 \u8232 \u8232 
+\f2\b \cf4 val 
+\f3\b0 \cf5 querytmp9 = \cf6 """\uc0\u8232   SELECT  PRA.[EID] as PEID\u8232     ,ad.AccountNumber AS MEDAccount ,MIN(pra.AdministrationDateTime) AS 'First Abx Admin Date',\u8232     Rank () OVER (Partition by PRA.EID ORDER by PRA.AdministrationDateTime )as MEDRANK\u8232     ,dpd.TypeName AS Drug_Type_Description\u8232     ,dpd.Name as DrugName\u8232   FROM #TEMP1\u8232   INNER join  PhaRxAdministrations pra\u8232     On 	#TEMP1.EID=PRA.EID\u8232   INNER JOIN AbstractData ad ON pra.SourceID = ad.SourceID\u8232     AND pra.VisitID = ad.VisitID\u8232   LEFT JOIN PhaRx pr ON pra.SourceID = pr.SourceID\u8232     AND pra.PrescriptionID = pr.PrescriptionID\u8232     AND pra.VisitID = pr.VisitID\u8232   LEFT JOIN PhaRxMedications prm ON pr.SourceID = prm.SourceID\u8232     AND pr.PrescriptionID = prm.PrescriptionID\u8232   INNER JOIN DPhaDrugData dpd ON prm.SourceID = dpd.SourceID\u8232     AND prm.DrugID = dpd.DrugID COLLATE SQL_Latin1_General_CP1_CS_AS\u8232   WHERE dpd.typeID IN (\u8232      '08:12.02'\u8232     ,'08:12.28'\u8232     ,'08:14.92'\u8232     ,'08:16.92'\u8232     ,'08:30.92'\u8232     ,'08:16.04'\u8232     ,'08:18.92'\u8232     ,'08:14.08'\u8232     ,'08:12.06'\u8232     ,'08:12.08'\u8232     ,'08:14.16'\u8232     ,'08:12.12'\u8232     ,'08:12.07'\u8232     ,'08:18.24'\u8232     ,'08:18.32'\u8232     ,'08:12.16'\u8232     ,'08:14.28'\u8232     ,'08:12.18'\u8232     ,'08:12.20'\u8232     ,'08:12.24'\u8232     )\u8232   GROUP BY PRA.EID\u8232     ,ad.AccountNumber\u8232     ,pra.AdministrationDateTime\u8232     ,dpd.Name\u8232     ,dpd.TypeName\u8232     )\u8232                 """\u8232 
+\f2\b \cf4 val 
+\f3\b0 \cf5 MEDMAR = sqlContext.sql(querytmp9)\uc0\u8232 MEDMAR.registerTempTable(\cf6 "MEDMAR"\cf5 )\uc0\u8232 \u8232 \u8232 
+\f2\b \cf4 val 
+\f3\b0 \cf5 querytmp10 = \cf6 """\uc0\u8232   SELECT *\u8232   FROM MEDMAR\u8232   WHERE MEDMAR.MEDRANK=1\u8232                 """\u8232 
+\f2\b \cf4 val 
+\f3\b0 \cf5 #MED1 = sqlContext.sql(querytmp10)\uc0\u8232   #MED1.registerTempTable(\cf6 "#MED1"\cf5 )\uc0\u8232 \u8232 \u8232 
+\f2\b \cf4 val 
+\f3\b0 \cf5 querytmp12 = \cf6 """\uc0\u8232   SELECT  *,\u8232     CASE\u8232       WHEN (#Med1.[First Abx Admin Date]) <= dateadd(hh, 3, (\u8232         CASE\u8232           WHEN #TEMP1.[ED Received Date Time] IS NULL\u8232             THEN #TEMP1.[ED Received Date Time]\u8232           ELSE #TEMP1.[ED Received Date Time]\u8232           END\u8232       ))\u8232       THEN 'Y'\u8232     ELSE 'N'\u8232     END\u8232   AS ArrivalAbx\u8232   FROM #TEMP1\u8232   INNER JOIN #MED1 On #TEMP1.EID=#MED1.PEID\u8232                  """\u8232 
+\f2\b \cf4 val 
+\f3\b0 \cf5 #MEDF = sqlContext.sql(querytmp12)\uc0\u8232 #MEDF.registerTempTable(\cf6 "#MEDF"\cf5 )\uc0\u8232 \u8232 \u8232 
+\f2\b \cf4 val 
+\f3\b0 \cf5 querytmp13 = \cf6 """\uc0\u8232   SELECT *\u8232     ,RANK() OVER (\u8232       PARTITION BY FEID ORDER BY [LactateDate]\u8232       ) AS Rn\u8232   FROM #MEDF\u8232   LEFT JOIN Lc ON #MEDF.EID = Lc.FEID\u8232                  """\u8232 
+\f2\b \cf4 val 
+\f3\b0 \cf5 LAC = sqlContext.sql(querytmp13)\uc0\u8232 LAC.registerTempTable(\cf6 "LAC"\cf5 )\uc0\u8232 \u8232 \u8232 
+\f2\b \cf4 val 
+\f3\b0 \cf5 querytmp14 = \cf6 """\uc0\u8232   SELECT *\u8232   FROM LAC\u8232   WHERE Rn IN (1 ,2)\u8232                  """\u8232 
+\f2\b \cf4 val 
+\f3\b0 \cf5 #LACT = sqlContext.sql(querytmp14)\uc0\u8232 #M#LACT.registerTempTable(\cf6 "#LACT"\cf5 )\uc0\u8232 \u8232 \u8232 
+\f2\b \cf4 val 
+\f3\b0 \cf5 querytmp15 = \cf6 """\uc0\u8232   SELECT a.*\u8232     ,B.LactateDate AS SecoundLactDate\u8232     ,B.LactateResult AS SecoundLactateResult\u8232   FROM #LACT AS a\u8232   LEFT JOIN #LACT AS b ON a.EID = B.EID\u8232     AND b.Rn = 2\u8232   WHERE A.Rn = 1\u8232                  """\u8232 
+\f2\b \cf4 val 
+\f3\b0 \cf5 #LACFIN = sqlContext.sql(querytmp15)\uc0\u8232 #LACFIN.registerTempTable(\cf6 "#LACFIN"\cf5 )\uc0\u8232 \u8232 \u8232 
+\f2\b \cf4 val 
+\f3\b0 \cf5 querytmp16 = \cf6 """\uc0\u8232   SELECT EID\u8232     ,MIN([Activity Date/Time]) AS ActivityDate\u8232     ,DIS.query\u8232     ,CASE DIS.Query\u8232       WHEN 'NVSBPS'\u8232         THEN Dis.[Query Text]\u8232       WHEN 'NVSBPD'\u8232         THEN Dis.[Query Text]\u8232       WHEN 'NVSTEMP'\u8232         THEN Dis.[Query Text]\u8232       WHEN 'NRRRC'\u8232         THEN Dis.[Query Text]\u8232       WHEN 'NVSPULSE'\u8232         THEN Dis.[Query Text]\u8232       END AS EDVitalSigns\u8232     ,CASE DIS.Query\u8232       WHEN 'NVSBPS'\u8232         THEN DIS.[Query Text 2]\u8232       WHEN 'NVSBPD'\u8232         THEN DIS.[Query Text 2]\u8232       WHEN 'NVSTEMP'\u8232         THEN DIS.[Query Text 2]\u8232       WHEN 'NRRRC'\u8232         THEN DIS.[Query Text 2]\u8232       WHEN 'NVSPULSE'\u8232         THEN DIS.[Query Text 2]\u8232       END AS EDVitalsValues\u8232   FROM QryIntVisitPT_All_Activity AS DIS WITH\u8232   WHERE DIS.Query IN (\u8232     'NVSBPS'\u8232     ,'NVSBPD'\u8232     ,'NVSTEMP'\u8232     ,'NRRRC'\u8232     ,'NVSPULSE'\u8232     )\u8232     AND DIS.INSTITUTION IN ("MHR")\u8232   GROUP BY Dis.[Query Text]\u8232     ,Dis.[Query Text 2]\u8232     ,DIS.[Activity Date/Time]\u8232     ,DIS.Query\u8232     ,DIS.Account\u8232     ,DIs.EID\u8232                  """\u8232 
+\f2\b \cf4 val 
+\f3\b0 \cf5 DIS = sqlContext.sql(querytmp16)\uc0\u8232 DIS.registerTempTable(\cf6 "DIS"\cf5 )\uc0\u8232 \u8232 \u8232 
+\f2\b \cf4 val 
+\f3\b0 \cf5 querytmp17 = \cf6 """\uc0\u8232   SELECT #LACFIN.*\u8232     ,DIS.EDVitalSigns\u8232     ,DIS.EDVitalsValues\u8232     ,ROW_NUMBER() OVER (\u8232       PARTITION BY DIS.EID\u8232       ,DIS.query ORDER BY DIS.[ActivityDate] ASC\u8232       ) rn1\u8232   FROM #LACFIN\u8232   INNER JOIN DIS ON dis.EID = #LACFIN.EID\u8232                  """\u8232 
+\f2\b \cf4 val 
+\f3\b0 \cf5 #final1 = sqlContext.sql(querytmp17)\uc0\u8232 #final1.registerTempTable(\cf6 "#final1"\cf5 )\uc0\u8232 \u8232 \u8232 
+\f2\b \cf4 val 
+\f3\b0 \cf5 querytmp18 = \cf6 """\uc0\u8232   SELECT *\u8232   FROM #final1\u8232   WHERE rn1 = 1\u8232                  """\u8232 
+\f2\b \cf4 val 
+\f3\b0 \cf5 acc = sqlContext.sql(querytmp18)\uc0\u8232 acc.registerTempTable(\cf6 "acc"\cf5 )\uc0\u8232 \u8232 \u8232 
+\f2\b \cf4 val 
+\f3\b0 \cf5 querytmp19 = \cf6 """\uc0\u8232   SELECT *\u8232   FROM acc\u8232   PIVOT(MAX([EDVITALSVALUES]) FOR [EDVitalSigns] IN (\u8232      [Temperature]\u8232     ,[Blood Pressure Diastolic]\u8232     ,[Blood Pressure Systolic]\u8232     ,[Pulse Rate (Adult)]\u8232     ,[Respiratory Rate]\u8232     )) AS PVT\u8232                  """\u8232 
+\f2\b \cf4 val 
+\f3\b0 \cf5 #GrandFinal = sqlContext.sql(querytmp19)\uc0\u8232 #GrandFinal.registerTempTable(\cf6 "#GrandFinal"\cf5 )\uc0\u8232 \u8232 \u8232 
+\f2\b \cf4 val 
+\f3\b0 \cf5 querytmp20 = \cf6 """\uc0\u8232   SELECT *\u8232     ,convert(varchar(30), (datediff(mi, GF.[FirstSepsisDoneDate], GF.OrderDatetime)/ 60))+ ':' +\u8232      convert(varchar(30), (datediff(mi, GF.[FirstSepsisDoneDate], GF.OrderDatetime)% 60)) AS ElapsedTime\u8232     ,CASE\u8232       WHEN (GF.[First Abx Admin Date] IS NULL)\u8232         OR (GF.OrderDatetime IS NULL)\u8232         THEN 'NULL'\u8232       WHEN ((DATEDIFF(mi, GF.[First Abx Admin Date], GF.OrderDatetime) <=180) OR\u8232         (DATEDIFF(mi, GF.[First Abx Admin Date], GF.OrderDatetime) <=-1440) )\u8232         THEN 'Y' ELSE 'N'\u8232         END AS 'ABX within 3hr of Sepsis OS'\u8232     ,CASE\u8232       WHEN (GF.[First BC] IS NULL)\u8232         OR (GF.[First Abx Admin Date] IS NULL)\u8232         THEN 'NULL'\u8232       ELSE CASE\u8232         WHEN GF.[First BC] < GF.[First Abx Admin Date]\u8232           THEN 'Y'\u8232         WHEN GF.[First BC] > GF.[First Abx Admin Date]\u8232           THEN 'N'\u8232         END\u8232       END AS 'BC done prior to ABX Admin'\u8232     ,CASE\u8232       WHEN (GF.[LactateDate] IS NULL)\u8232         OR (GF.OrderDateTime IS NULL)\u8232         THEN 'NULL'\u8232           WHEN ((DATEDIFF(mi, GF.[LactateDate], GF.[OrderDatetime]) <=180) OR\u8232           (DATEDIFF(mi, GF.[LactateDate], GF.[OrderDatetime]) <=-360))\u8232           THEN 'Y' ELSE 'N'\u8232           END AS 'Lac within 3hr of Sepsis OS'\u8232   FROM #GrandFinal AS GF\u8232   LEFT JOIN (\u8232     ) Sub ON GF.EID = Sub.SEID\u8232   WHERE rns = 1\u8232     OR RNS IS NULL\u8232                  """\u8232 
+\f2\b \cf4 val 
+\f3\b0 \cf5 Report = sqlContext.sql(querytmp20)\uc0\u8232 Report.registerTempTable(\cf6 "Report"\cf5 )\uc0\u8232 \u8232 \u8232 \u8232 
+\f0\i \cf2 /**     test sfuff below this line                 */\uc0\u8232 \u8232 
+\f2\i0\b \cf4 val 
+\f3\b0 \cf5 querytmp0 = \cf6 """\uc0\u8232       select DIS.MRN as Test_Value\u8232         from VISITPT_ALL_DIS DIS\u8232                 """\u8232 
+\f2\b \cf4 val 
+\f3\b0 \cf5 SS = sqlContext.sql(querytmp0)\uc0\u8232 SS.registerTempTable(\cf6 "SS"\cf5 )\
 }
