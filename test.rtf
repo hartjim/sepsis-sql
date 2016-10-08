@@ -1,8 +1,10 @@
-{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+{\rtf1\ansi\ansicpg1252\cocoartf1504
 {\fonttbl\f0\fnil\fcharset0 Menlo-Italic;\f1\fnil\fcharset0 Menlo-BoldItalic;\f2\fnil\fcharset0 Menlo-Regular;
 \f3\fnil\fcharset0 Menlo-Bold;}
 {\colortbl;\red255\green255\blue255;\red81\green136\blue67;\red32\green32\blue32;\red109\green109\blue109;
 \red191\green100\blue38;\red153\green168\blue186;\red88\green118\blue71;\red22\green171\blue173;}
+{\*\expandedcolortbl;\csgray\c100000;\csgenericrgb\c31765\c53333\c26275;\csgenericrgb\c12549\c12549\c12549;\csgenericrgb\c42745\c42745\c42745;
+\csgenericrgb\c74902\c39216\c14902;\csgenericrgb\c60000\c65882\c72941;\csgenericrgb\c34510\c46275\c27843;\csgenericrgb\c8627\c67059\c67843;}
 \margl1440\margr1440\vieww10800\viewh8400\viewkind0
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
 
@@ -176,14 +178,63 @@
 \f3\b \cf5 val 
 \f2\b0 \cf6 querytmp20 = \cf7 """\uc0\u8232   SELECT *\u8232     ,convert(varchar(30), (datediff(mi, GF.[FirstSepsisDoneDate], GF.OrderDatetime)/ 60))+ ':' +\u8232      convert(varchar(30), (datediff(mi, GF.[FirstSepsisDoneDate], GF.OrderDatetime)% 60)) AS ElapsedTime\u8232     ,CASE\u8232       WHEN (GF.[First Abx Admin Date] IS NULL)\u8232         OR (GF.OrderDatetime IS NULL)\u8232         THEN 'NULL'\u8232       WHEN ((DATEDIFF(mi, GF.[First Abx Admin Date], GF.OrderDatetime) <=180) OR\u8232         (DATEDIFF(mi, GF.[First Abx Admin Date], GF.OrderDatetime) <=-1440) )\u8232         THEN 'Y' ELSE 'N'\u8232         END AS 'ABX within 3hr of Sepsis OS'\u8232     ,CASE\u8232       WHEN (GF.[First BC] IS NULL)\u8232         OR (GF.[First Abx Admin Date] IS NULL)\u8232         THEN 'NULL'\u8232       ELSE CASE\u8232         WHEN GF.[First BC] < GF.[First Abx Admin Date]\u8232           THEN 'Y'\u8232         WHEN GF.[First BC] > GF.[First Abx Admin Date]\u8232           THEN 'N'\u8232         END\u8232       END AS 'BC done prior to ABX Admin'\u8232     ,CASE\u8232       WHEN (GF.[LactateDate] IS NULL)\u8232         OR (GF.OrderDateTime IS NULL)\u8232         THEN 'NULL'\u8232           WHEN ((DATEDIFF(mi, GF.[LactateDate], GF.[OrderDatetime]) <=180) OR\u8232           (DATEDIFF(mi, GF.[LactateDate], GF.[OrderDatetime]) <=-360))\u8232           THEN 'Y' ELSE 'N'\u8232           END AS 'Lac within 3hr of Sepsis OS'\u8232   FROM #GrandFinal AS GF\u8232   LEFT JOIN (\u8232     ) Sub ON GF.EID = Sub.SEID\u8232   WHERE rns = 1\u8232     OR RNS IS NULL\u8232                  """\u8232 
 \f3\b \cf5 val 
-\f2\b0 \cf6 Report = sqlContext.sql(querytmp20)\uc0\u8232 Report.registerTempTable(\cf7 "Report"\cf6 )\uc0\u8232 \u8232 \u8232 \u8232 
-\f0\i \cf2 /**     test sfuff below this line                 */\uc0\u8232 \u8232 
+\f2\b0 \cf6 Report = sqlContext.sql(querytmp20)\uc0\u8232 Report.registerTempTable(\cf7 "Report"\cf6 )\uc0\u8232 \u8232 \u8232 \u8232 \u8232 \u8232 \u8232 \u8232 \u8232 \cf4 //     test sfuff below this line\uc0\u8232 \u8232 
+\f3\b \cf5 import 
+\f2\b0 \cf6 java.sql.Timestamp\uc0\u8232 \u8232 
+\f3\b \cf5 import 
+\f2\b0 \cf6 org.apache.spark.sql.DataFrame\uc0\u8232 
+\f3\b \cf5 import 
+\f2\b0 \cf6 org.apache.spark.sql.functions._\uc0\u8232 
+\f3\b \cf5 import 
+\f2\b0 \cf6 org.apache.spark.sql.types.\{DataType\cf5 , \cf6 LongType\}\uc0\u8232 \u8232 
+\f3\b \cf5 def 
+\f2\b0 \cf6 convertToDateTime: Long => Timestamp = 
+\f3\b \cf5 new 
+\f2\b0 \cf6 Timestamp(_)\uc0\u8232 \u8232 
+\f0\i \cf2 /**\uc0\u8232   * If the given column in the data frame is of type bigint then it is transformed to timestamp.\u8232   *\u8232   * 
+\f1\b @param columnName 
+\f0\b0 Name of the date column\uc0\u8232   * 
+\f1\b @param df         
+\f0\b0 Data frame\uc0\u8232   * 
+\f1\b @return 
+\f0\b0 transformed column\uc0\u8232   */\u8232 
+\f3\i0\b \cf5 def 
+\f2\b0 \cf6 fixDateTimeColumn(columnName: String\cf5 , \cf6 df: DataFrame) = findColumn(df\cf5 , \cf6 columnName\cf5 , \cf6 LongType)\uc0\u8232   .map(udf(convertToDateTime).apply(_))\u8232   .getOrElse(df.col(columnName))\u8232 \u8232 
+\f3\b \cf5 def 
+\f2\b0 \cf6 findColumn(df: DataFrame\cf5 , \cf6 colName: String\cf5 , \cf6 colType: DataType) = \{\uc0\u8232   
+\f3\b \cf5 val 
+\f2\b0 \cf6 existingFieldStruct = df.schema.find(f => \{\uc0\u8232     f.name == colName && f.dataType == colType\u8232   \})\u8232   existingFieldStruct.map(structField => df.col(structField.name))\u8232 \}\u8232 \u8232 
+\f0\i \cf2 /** val hdfs_path = "hdfs://10.0.100.252:8020/user/hdfs/stjoe/amalga/sqooped/2016/09/01" */\uc0\u8232 
 \f3\i0\b \cf5 val 
-\f2\b0 \cf6 EdmPatientStatusEventHistory = sqlContext.read.parquet(\cf7 s"
+\f2\b0 \cf6 hdfs_path = \cf7 "file:///Users/jimmarczyk/01/"\uc0\u8232 \u8232 \u8232 
+\f3\b \cf5 val 
+\f2\b0 \cf6 VISITPT_ALL_DIS = sqlContext.read.parquet(\cf7 s"
 \f3\b \cf8 $
-\f2\b0 \cf6 hdfs_path\cf7 /sjhsEDM/EdmPatientStatusEventHistory/*.parquet"\cf6 )\uc0\u8232 EdmPatientStatusEventHistory\u8232 .withColumn(\cf7 "StartDateTime_f"\cf5 , \cf6 fixDateTimeColumn(\cf7 "StartDateTime"\cf5 , \cf6 EdmPatientStatusEventHistory))\uc0\u8232 .drop(\cf7 "StartDateTime"\cf6 )\uc0\u8232 .withColumnRenamed(\cf7 "StartDateTime_f"\cf5 , \cf7 "StartDateTime"\cf6 )\uc0\u8232 .registerTempTable(\cf7 "EdmPatientStatusEventHistory"\cf6 )\uc0\u8232 \u8232 
+\f2\b0 \cf6 hdfs_path\cf7 /azViews/VISITPT_ALL_DIS/*.parquet"\cf6 )\uc0\u8232 VISITPT_ALL_DIS\u8232   .withColumn(\cf7 "AdmitDateTime_f"\cf5 , \cf6 fixDateTimeColumn(\cf7 "AdmitDateTime"\cf5 , \cf6 VISITPT_ALL_DIS))\uc0\u8232   .withColumn(\cf7 "DischargeDateTime_f"\cf5 , \cf6 fixDateTimeColumn(\cf7 "DischargeDateTime"\cf5 , \cf6 VISITPT_ALL_DIS))\uc0\u8232   .withColumn(\cf7 "ERAdmitDtTm_f"\cf5 , \cf6 fixDateTimeColumn(\cf7 "ERAdmitDtTm"\cf5 , \cf6 VISITPT_ALL_DIS))\uc0\u8232   .withColumn(\cf7 "LastIPVisitDtTm_f"\cf5 , \cf6 fixDateTimeColumn(\cf7 "LastIPVisitDtTm"\cf5 , \cf6 VISITPT_ALL_DIS))\uc0\u8232   .drop(\cf7 "AdmitDateTime"\cf6 )\uc0\u8232   .drop(\cf7 "DischargeDateTime"\cf6 )\uc0\u8232   .drop(\cf7 "ERAdmitDtTm"\cf6 )\uc0\u8232   .drop(\cf7 "LastIPVisitDtTm"\cf6 )\uc0\u8232   .withColumnRenamed(\cf7 "AdmitDateTime_f"\cf5 , \cf7 "AdmitDateTime"\cf6 )\uc0\u8232   .withColumnRenamed(\cf7 "DischargeDateTime_f"\cf5 , \cf7 "DischargeDateTime"\cf6 )\uc0\u8232   .withColumnRenamed(\cf7 "ERAdmitDtTm_f"\cf5 , \cf7 "ERAdmitDtTm"\cf6 )\uc0\u8232   .withColumnRenamed(\cf7 "LastIPVisitDtTm_f"\cf5 , \cf7 "LastIPVisitDtTm"\cf6 )\uc0\u8232   .registerTempTable(\cf7 "VISITPT_ALL_DIS"\cf6 )\uc0\u8232 
 \f3\b \cf5 val 
-\f2\b0 \cf6 querytmp0 = \cf7 """\uc0\u8232       select top 100 DIS.ERAdmitDtTm as Test_Yo\u8232         from VISITPT_ALL_DIS DIS\u8232                 """\u8232 
+\f2\b0 \cf6 ABS_DG1601 = sqlContext.read.parquet(\cf7 s"
+\f3\b \cf8 $
+\f2\b0 \cf6 hdfs_path\cf7 /azABS/ABS_DG1601/*.parquet"\cf6 )\uc0\u8232 ABS_DG1601.registerTempTable(\cf7 "ABS_DG1601"\cf6 )\uc0\u8232 \u8232 \u8232 \u8232 \cf4 /*val querytmp0 = """\uc0\u8232       SELECT DIS.EID\u8232       FROM VISITPT_ALL_DIS DIS\u8232       JOIN ABS_DG1601 DF ON DIS.EID = DF.EID\u8232       WHERE DF.DxCode IN (\u8232           '785.52'\u8232           ,'995.91'\u8232           ,'995.92'\u8232           ,'R65.21'\u8232           ,'A41.9'\u8232           ,'R65.20'\u8232           ,'A021'\u8232           ,'A227'\u8232           ,'A267'\u8232           ,'A327'\u8232           ,'A400'\u8232           ,'A401'\u8232           ,'A403'\u8232           ,'A408'\u8232           ,'A409'\u8232           ,'A4101'\u8232           ,'A4102'\u8232           ,'A411'\u8232           ,'A412'\u8232           ,'A413'\u8232           ,'A414'\u8232           ,'A4150'\u8232           ,'A4151'\u8232           ,'A4152'\u8232           ,'A4153'\u8232           ,'A4159'\u8232           ,'A4181'\u8232           ,'A4189'\u8232           ,'A419'\u8232           ,'A427'\u8232           ,'A5486'\u8232           ,'B377'\u8232           ,'R6520'\u8232           ,'R6521')\u8232         AND DIS.DischargeDateTime BETWEEN '2016-01-01 00:00:00.0' AND '2016-01-31 23:59:00.0'\u8232         AND DIS.PatientType = 'IN'\u8232         AND DIS.ServicingFacility = 'SJM'\u8232         AND DIS.Institution = 'SJO'\u8232         AND DIS.AccountStatus = 'DIS'\u8232                 """\u8232 val freebase = sqlContext.sql(querytmp0)\u8232 freebase.registerTempTable("freebase")*/\u8232 \u8232 \u8232 \u8232 \u8232 \u8232 
 \f3\b \cf5 val 
-\f2\b0 \cf6 freebase = sqlContext.sql(querytmp0)\uc0\u8232 freebase.registerTempTable(\cf7 "freebase"\cf6 )\uc0\u8232 \
+\f2\b0 \cf6 querytmp0 = \cf7 """\uc0\u8232       SELECT COUNT(DIS.EID)\u8232       FROM VISITPT_ALL_DIS DIS\u8232       // JOIN ABS_DG1601 DF ON DIS.EID = DF.EID\u8232       WHERE DIS.Institution = 'MHR'\u8232         AND DIS.ServicingFacility = 'SMM'\u8232         AND DIS.PatientType = 'IN'\u8232         AND DIS.DischargeDateTime BETWEEN '2016-01-01 00:00:00.0' AND '2016-01-31 23:59:00.0'\u8232         AND DIS.AccountStatus = 'DIS'\u8232                 """\u8232 
+\f3\b \cf5 val 
+\f2\b0 \cf6 freebase = sqlContext.sql(querytmp0)\uc0\u8232 freebase.registerTempTable(\cf7 "freebase"\cf6 )\uc0\u8232 \u8232 \u8232 \u8232 \u8232 
+\f3\b \cf5 val 
+\f2\b0 \cf6 querytmp0 = \cf7 """\uc0\u8232       SELECT COUNT(DF.EID)\u8232       FROM ABS_DG1601 DF\u8232       WHERE DF.DxCode IN (\u8232           '785.52'\u8232           ,'995.91'\u8232           ,'995.92'\u8232           ,'R65.21'\u8232           ,'A41.9'\u8232           ,'R65.20'\u8232           ,'A021'\u8232           ,'A227'\u8232           ,'A267'\u8232           ,'A327'\u8232           ,'A400'\u8232           ,'A401'\u8232           ,'A403'\u8232           ,'A408'\u8232           ,'A409'\u8232           ,'A4101'\u8232           ,'A4102'\u8232           ,'A411'\u8232           ,'A412'\u8232           ,'A413'\u8232           ,'A414'\u8232           ,'A4150'\u8232           ,'A4151'\u8232           ,'A4152'\u8232           ,'A4153'\u8232           ,'A4159'\u8232           ,'A4181'\u8232           ,'A4189'\u8232           ,'A419'\u8232           ,'A427'\u8232           ,'A5486'\u8232           ,'B377'\u8232           ,'R6520'\u8232           ,'R6521'\u8232           )\u8232                 """\u8232 
+\f3\b \cf5 val 
+\f2\b0 \cf6 freebase = sqlContext.sql(querytmp0)\uc0\u8232 freebase.registerTempTable(\cf7 "freebase"\cf6 )\uc0\u8232 \u8232 \u8232 \u8232 
+\f3\b \cf5 val 
+\f2\b0 \cf6 hdfs_path = \cf7 "file:///Users/jimmarczyk/01/"\uc0\u8232 \u8232 
+\f3\b \cf5 val 
+\f2\b0 \cf6 ABS_DG1601 = sqlContext.read.parquet(\cf7 s"
+\f3\b \cf8 $
+\f2\b0 \cf6 hdfs_path\cf7 /azABS/ABS_DG1601/*.parquet"\cf6 )\uc0\u8232 ABS_DG1601.registerTempTable(\cf7 "ABS_DG1601"\cf6 )\uc0\u8232 \u8232 
+\f3\b \cf5 val 
+\f2\b0 \cf6 VISITPT_ALL_DIS = sqlContext.read.parquet(\cf7 s"
+\f3\b \cf8 $
+\f2\b0 \cf6 hdfs_path\cf7 /azViews/VISITPT_ALL_DIS/*.parquet"\cf6 )\uc0\u8232 VISITPT_ALL_DIS.registerTempTable(\cf7 "VISITPT_ALL_DIS"\cf6 )\uc0\u8232 \u8232 \u8232 
+\f3\b \cf5 val 
+\f2\b0 \cf6 querytmp0 = \cf7 """\uc0\u8232       SELECT *\u8232       FROM ABS_DG1601\u8232       where EID='b86bbf86-ce3a-bea4e411-6d38-11e5-9f2d-00219ba26b61'\u8232 \u8232                 """\u8232 
+\f3\b \cf5 val 
+\f2\b0 \cf6 freebase = sqlContext.sql(querytmp0)\uc0\u8232 freebase.show()\u8232 freebase.registerTempTable(\cf7 "freebase"\cf6 )\uc0\u8232 \
 }
