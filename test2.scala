@@ -1,32 +1,47 @@
-/** hard-coding parameters since query is from a stored procedure
-@StartDate = "2016-01-01 00:00:00.0"
-@EndDate = "2016-01-31 23:59:00.0"
-@Institution = "MHR"
-@ServicingFacility = "SMM"
-  */
+//hard-coding parameters since query is from a stored procedure
+//@StartDate = "2016-01-01 00:00:00.0"
+//@EndDate = "2016-01-31 23:59:00.0"
+//@Institution = "MHR"
+//@ServicingFacility = "SMM"
 
 
 import java.sql.Timestamp
-
-
 import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types.{DataType, LongType}
 
 
-def convertToDateTime: Long => Timestamp = new Timestamp(_)
+//object test2 {
 
-def fixDateTimeColumn(columnName: String, df: DataFrame) = findColumn(df, columnName, LongType)
-  .map(udf(convertToDateTime).apply(_))
-  .getOrElse(df.col(columnName))
+  def convertToDateTime: Long => Timestamp = new Timestamp(_)
+
+  def fixDateTimeColumn(columnName: String, df: DataFrame) = findColumn(df, columnName, LongType)
+    .map(udf(convertToDateTime).apply(_))
+    .getOrElse(df.col(columnName))
 
 
-def findColumn(df: DataFrame, colName: String, colType: DataType) = {
-  val existingFieldStruct = df.schema.find(f => {
-    f.name == colName && f.dataType == colType
-  })
-  existingFieldStruct.map(structField => df.col(structField.name))
+  def findColumn(df: DataFrame, colName: String, colType: DataType) = {
+    val existingFieldStruct = df.schema.find(f => {
+      f.name == colName && f.dataType == colType
+    })
+    existingFieldStruct.map(structField => df.col(structField.name))
+  }
+//}
+/**  user-defined function  */
+
+
+
+def addHours(dttmColumn1: Timestamp, dttmColumn2: Timestamp, numberOfHours: Integer)
+: String = {
+
+  if (dttmColumn1.getTime <= (dttmColumn2.getTime + 3*3600*1000)){
+    "Y"
+  } else
+    "N"
 }
+sqlContext.udf.register("addHours", addHours(_:Timestamp, _:Timestamp, _:Integer))
+
+
 
 /** table definitions */
 
@@ -107,7 +122,11 @@ val ADT_Lookup_Provider = sqlContext.read.parquet(s"$hdfs_path/azADT/ADT_Lookup_
 ADT_Lookup_Provider.registerTempTable("ADT_Lookup_Provider")
 
 val PhaRxAdministrations = sqlContext.read.parquet(s"$hdfs_path/sjhsPHA/PhaRxAdministrations/*.parquet")
-PhaRxAdministrations.registerTempTable("PhaRxAdministrations")
+PhaRxAdministrations
+  .withColumn("AdministrationDateTime_f", fixDateTimeColumn("AdministrationDateTime", PhaRxAdministrations))
+  .drop("AdministrationDateTime")
+  .withColumnRenamed("AdministrationDateTime_f", "AdministrationDateTime")
+  .registerTempTable("PhaRxAdministrations")
 
 val AbstractData = sqlContext.read.parquet(s"$hdfs_path/sjhsRCS/AbstractData/*.parquet")
 AbstractData.registerTempTable("AbstractData")
@@ -122,8 +141,10 @@ val DPhaDrugData = sqlContext.read.parquet(s"$hdfs_path/sjhsOE/DPhaDrugData/*.pa
 DPhaDrugData.registerTempTable("DPhaDrugData")
 
 
+
+
 val querytmp0 =
-              """
+  """
   SELECT DISTINCT DIS.EID
     ,DIS.Institution
     ,DIS.ServicingFacility
@@ -209,12 +230,13 @@ val querytmp0 =
       ,'B377'
       ,'R6520'
       ,'R6521')
-              """
+  """
 val MN = sqlContext.sql(querytmp0)
 MN.registerTempTable("MN")
 
+
 val querytmp1 =
-            """
+  """
   SELECT EID
     ,MIN(ActivityDate_Time) AS SepsisDoneDate
     ,'Y' AS SepsisScreenDone
@@ -256,12 +278,13 @@ val querytmp1 =
     ,'NSEPOD'
     ,'NSEPSIRS')
   GROUP BY EID
-              """
+  """
 val SS = sqlContext.sql(querytmp1)
 SS.registerTempTable("SS")
 
+
 val querytmp2 =
-              """
+  """
   SELECT EID
     ,MIN(ActivityDate_Time) AS FirstSepsisDoneDate
   FROM QryIntVisitPT_All_Activity AS DIS1
@@ -282,12 +305,13 @@ val querytmp2 =
     AND DIS1.Query = 'NSEPPOS'
     AND DIS1.QueryText2 LIKE '%Positive%'
   GROUP BY EID
-             """
+  """
 val FSS = sqlContext.sql(querytmp2)
 FSS.registerTempTable("FSS")
 
+
 val querytmp3 =
-            """
+  """
   SELECT ORA.EID
     ,ORA.OrderDateTime
     ,ORD.Description AS OrderDescription
@@ -354,12 +378,13 @@ val querytmp3 =
     'SXEDSEPS2',
     'SUCCSEP2'
     )
-                 """
+  """
 val OE = sqlContext.sql(querytmp3)
 OE.registerTempTable("OE")
 
+
 val querytmp4 =
-                """
+  """
 SELECT EID
   ,MIN(Collected_Date_Time) AS First_BC
 FROM MCPathBBPt_All_ADM AS BC
@@ -378,12 +403,13 @@ AND Result NOT IN (
   ,'                         Test not performed '
   )
   GROUP BY EID
-                """
+  """
 val FB = sqlContext.sql(querytmp4)
 FB.registerTempTable("FB")
 
+
 val querytmp5 =
-                """
+  """
   SELECT LAB.EID
     ,MIN(LAB.CollectedDateTime) AS First_WBC
     ,LAB.observationvalue AS WBCResult
@@ -392,12 +418,13 @@ val querytmp5 =
     AND LAB.Institution IN ("MHR")
   GROUP BY LAB.EID
     ,LAB.observationvalue
-                """
+  """
 val FW = sqlContext.sql(querytmp5)
 FW.registerTempTable("FW")
 
+
 val querytmp6 =
-                """
+  """
   SELECT EID AS FEID
     ,universalserviceid
     ,MIN(CollectedDateTime) AS LactateDate
@@ -426,12 +453,13 @@ val querytmp6 =
   GROUP BY EID
     ,universalserviceid
     ,observationvalue
-               """
+  """
 val LC = sqlContext.sql(querytmp6)
 LC.registerTempTable("LC")
 
+
 val querytmp7 =
-                """
+  """
   SELECT MN.*
     ,FB.First_BC
     ,FW.First_WBC
@@ -448,15 +476,16 @@ val querytmp7 =
   LEFT JOIN OE ON MN.EID = OE.EID
   LEFT JOIN FB ON MN.EID = FB.EID
   LEFT JOIN FW ON MN.EID = FW.EID
-                """
+  """
 val FINAL = sqlContext.sql(querytmp7)
 FINAL.registerTempTable("FINAL")
+
 
 val querytmp8 =
   """
   SELECT *
   FROM FINAL
-WHERE RankL = 1
+  WHERE RankL = 1
   """
 val TEMP1 = sqlContext.sql(querytmp8)
 TEMP1.registerTempTable("TEMP1")
@@ -464,26 +493,12 @@ TEMP1.registerTempTable("TEMP1")
 
 val querytmp9 =
   """
-  SELECT TEMP1.EID AS PEID
-  FROM TEMP1
-  INNER JOIN PhaRxAdministrations PRA ON TEMP1.EID = PRA.EID
-  INNER JOIN AbstractData AD ON PRA.SourceID = AD.SourceID AND PRA.VisitID = AD.VisitID
-  LEFT JOIN PhaRx PR ON PRA.SourceID = PR.SourceID AND PRA.PrescriptionID = PR.PrescriptionID AND PRA.VisitID = PR.VisitID
-  LEFT JOIN PhaRxMedications PRM ON PR.SourceID = PRM.SourceID AND PR.PrescriptionID = PRM.PrescriptionID
-  """
-val MEDMAR = sqlContext.sql(querytmp9)
-MEDMAR.registerTempTable("MEDMAR")
-
-
-
-val querytmp9 =
-              """
-  SELECT  PRA.EID as PEID
-  ,AD.AccountNumber AS MEDAccount
-  ,MIN(PRA.AdministrationDateTime) AS 'First Abx Admin Date'
-  ,Rank () OVER (Partition by PRA.EID ORDER by PRA.AdministrationDateTime) AS MEDRANK
-  ,DPD.TypeName AS Drug_Type_Description
-  ,DPD.Name AS DrugName
+  SELECT PRA.EID as PEID
+    ,AD.AccountNumber AS MEDAccount
+    ,MIN(PRA.AdministrationDateTime) AS First_Abx_Admin_Date
+    ,Rank () OVER (Partition by PRA.EID ORDER by PRA.AdministrationDateTime) AS MEDRANK
+    ,DPD.TypeName AS Drug_Type_Description
+    ,DPD.Name AS DrugName
   FROM TEMP1
   INNER join  PhaRxAdministrations PRA
     On 	TEMP1.EID = PRA.EID
@@ -495,36 +510,35 @@ val querytmp9 =
   LEFT JOIN PhaRxMedications PRM ON PR.SourceID = PRM.SourceID
     AND PR.PrescriptionID = PRM.PrescriptionID
   INNER JOIN DPhaDrugData DPD ON PRM.SourceID = DPD.SourceID
-    AND PRM.DrugID = DPD.DrugID COLLATE SQL_Latin1_General_CP1_CS_AS
-//  WHERE DPD.TypeID IN (
-//     '08:12.02'
-//    ,'08:12.28'
-//    ,'08:14.92'
-//    ,'08:16.92'
-//    ,'08:30.92'
-//    ,'08:16.04'
-//    ,'08:18.92'
-//    ,'08:14.08'
-//    ,'08:12.06'
-//    ,'08:12.08'
-//    ,'08:14.16'
-//    ,'08:12.12'
-//    ,'08:12.07'
-//    ,'08:18.24'
-//    ,'08:18.32'
-//    ,'08:12.16'
-//    ,'08:14.28'
-//    ,'08:12.18'
-//    ,'08:12.20'
-//    ,'08:12.24'
-//    )
-//  GROUP BY PRA.EID
-//    ,AD.AccountNumber
-//    ,PRA.AdministrationDateTime
-//    ,DPD.Name
-//    ,DPD.TypeName
-//    )
-              """
+    AND PRM.DrugID = DPD.DrugID
+  WHERE DPD.TypeID IN (
+     '08:12.02'
+    ,'08:12.28'
+    ,'08:14.92'
+    ,'08:16.92'
+    ,'08:30.92'
+    ,'08:16.04'
+    ,'08:18.92'
+    ,'08:14.08'
+    ,'08:12.06'
+    ,'08:12.08'
+    ,'08:14.16'
+    ,'08:12.12'
+    ,'08:12.07'
+    ,'08:18.24'
+    ,'08:18.32'
+    ,'08:12.16'
+    ,'08:14.28'
+    ,'08:12.18'
+    ,'08:12.20'
+    ,'08:12.24'
+    )
+  GROUP BY PRA.EID
+    ,AD.AccountNumber
+    ,PRA.AdministrationDateTime
+    ,DPD.Name
+    ,DPD.TypeName
+  """
 val MEDMAR = sqlContext.sql(querytmp9)
 MEDMAR.registerTempTable("MEDMAR")
 
@@ -532,212 +546,119 @@ MEDMAR.registerTempTable("MEDMAR")
 val querytmp10 =
   """
   SELECT *
-
   FROM MEDMAR
-
   WHERE MEDMAR.MEDRANK=1
-
   """
-val #MED1 = sqlContext.sql(querytmp10)
-
-#MED1.registerTempTable("#MED1")
-
+val MED1 = sqlContext.sql(querytmp10)
+MED1.registerTempTable("MED1")
 
 
+val querytmp11 =
+  """
+  SELECT *
+    , addHours(MED1.First_Abx_Admin_Date, TEMP1.ED_Received_Date_Time, 3) AS ArrivalAbx
+  FROM TEMP1
+  INNER JOIN MED1 ON TEMP1.EID = MED1.PEID
+  """
+val MEDF = sqlContext.sql(querytmp11)
+MEDF.registerTempTable("MEDF")
 
 
 val querytmp12 =
   """
-
-  SELECT  *,
-    CASE
-
-      WHEN (#Med1.[First Abx Admin Date]) <= dateadd(hh, 3, (
-
-        CASE
-
-          WHEN TEMP1.[ED Received Date Time] IS NULL
-
-            THEN TEMP1.[ED Received Date Time]
-          ELSE TEMP1.[ED Received Date Time]
-
-END
-
-      ))
-
-      THEN 'Y'
-
-    ELSE 'N'
-    END
-
-  AS ArrivalAbx
-
-FROM TEMP1
-
-  INNER JOIN #MED1 On TEMP1.EID=#MED1.PEID
-
+  SELECT *
+    ,RANK() OVER (PARTITION BY FEID ORDER BY LactateDate) AS RN
+  FROM MEDF
+  LEFT JOIN LC ON MEDF.EID = LC.FEID
   """
-
-val #MEDF = sqlContext.sql(querytmp12)
-
-#MEDF.registerTempTable("#MEDF")
-
-
-
+val LAC = sqlContext.sql(querytmp12)
+LAC.registerTempTable("LAC")
 
 
 val querytmp13 =
   """
-
   SELECT *
-
-    ,RANK() OVER (
-
-      ,PARTITION BY FEID ORDER BY [LactateDate]
-
-      ) AS Rn
-
-  FROM #MEDF
-
-  LEFT JOIN Lc ON #MEDF.EID = Lc.FEID
-
+  FROM LAC
+  WHERE RN IN (1 ,2)
   """
-val LAC = sqlContext.sql(querytmp13)
-
-LAC.registerTempTable("LAC")
-
-
-
+val LACT = sqlContext.sql(querytmp13)
+LACT.registerTempTable("LACT")
 
 
 val querytmp14 =
   """
-  SELECT *
-
-  FROM LAC
-
-  WHERE Rn IN (1 ,2)
-
+  SELECT A.*
+    ,B.LactateDate AS SecoundLactDate
+    ,B.LactateResult AS SecoundLactateResult
+  FROM LACT AS A
+  LEFT JOIN LACT AS B ON A.EID = B.EID
+    AND B.RN = 2
+  WHERE A.RN = 1
   """
-
-val #LACT = sqlContext.sql(querytmp14)
-#M
-#LACT.registerTempTable("#LACT")
-
-
-
+val LACFIN = sqlContext.sql(querytmp14)
+LACFIN.registerTempTable("LACFIN")
 
 
 val querytmp15 =
   """
-
-  SELECT a.*
-
-    ,B.LactateDate AS SecoundLactDate
-    ,B.LactateResult AS SecoundLactateResult
-
-  FROM #LACT AS a
-  LEFT JOIN #LACT AS b ON a.EID = B.EID
-
- AND b.Rn = 2
-  WHERE A.Rn = 1
-
+  SELECT EID
+    ,MIN(ActivityDate_Time) AS ActivityDate
+    ,DIS.Query
+    ,CASE DIS.Query
+      WHEN 'NVSBPS'
+        THEN DIS.QueryText
+      WHEN 'NVSBPD'
+        THEN DIS.QueryText
+      WHEN 'NVSTEMP'
+        THEN DIS.QueryText
+      WHEN 'NRRRC'
+        THEN DIS.QueryText
+      WHEN 'NVSPULSE'
+        THEN DIS.QueryText
+      END AS EDVitalSigns
+    ,CASE DIS.Query
+      WHEN 'NVSBPS'
+        THEN DIS.QueryText2
+      WHEN 'NVSBPD'
+        THEN DIS.QueryText2
+      WHEN 'NVSTEMP'
+        THEN DIS.QueryText2
+      WHEN 'NRRRC'
+        THEN DIS.QueryText2
+      WHEN 'NVSPULSE'
+        THEN DIS.QueryText2
+      END AS EDVitalsValues
+  FROM QryIntVisitPT_All_Activity AS DIS
+  WHERE DIS.Query IN (
+     'NVSBPS'
+    ,'NVSBPD'
+    ,'NVSTEMP'
+    ,'NRRRC'
+    ,'NVSPULSE'
+  )
+    AND DIS.INSTITUTION IN ("MHR")
+  GROUP BY DIS.QueryText
+    ,DIS.QueryText2
+    ,DIS.ActivityDate_Time
+    ,DIS.Query
+    ,DIS.Account
+    ,DIS.EID
   """
-
-val #LACFIN = sqlContext.sql(querytmp15)
-
-#LACFIN.registerTempTable("#LACFIN")
-
-
-
+val DIS = sqlContext.sql(querytmp15)
+DIS.registerTempTable("DIS")
 
 
 val querytmp16 =
   """
-  SELECT EID
-
-    ,MIN([Activity Date/Time]) AS ActivityDate
-
-    ,DIS.query
-
-    ,CASE DIS.Query
-
-      WHEN 'NVSBPS'
-
-     THEN Dis.[Query Text]
-
-    WHEN 'NVSBPD'
-
-     THEN Dis.[Query Text]
-
-      WHEN 'NVSTEMP'
-
-        THEN Dis.[Query Text]
-
-      WHEN 'NRRRC'
-
-        THEN Dis.[Query Text]
-      WHEN 'NVSPULSE'
-
-        THEN Dis.[Query Text]
-
-      END AS EDVitalSigns
-    ,CASE DIS.Query
-
-      WHEN 'NVSBPS'
-
-  THEN DIS.[Query Text 2]
-
-WHEN 'NVSBPD'
-
-        THEN DIS.[Query Text 2]
-
-      WHEN 'NVSTEMP'
-
-        THEN DIS.[Query Text 2]
-      WHEN 'NRRRC'
-
-  THEN DIS.[Query Text 2]
-
-WHEN 'NVSPULSE'
-
-        THEN DIS.[Query Text 2]
-      END AS EDVitalsValues
-
-  FROM QryIntVisitPT_All_Activity AS DIS WITH
-
-  WHERE DIS.Query IN (
-
-     'NVSBPS'
-
-    ,'NVSBPD'
-
-    ,'NVSTEMP'
-
-    ,'NRRRC'
-
-    ,'NVSPULSE'
-
-)
-
-    AND DIS.INSTITUTION IN ("MHR")
-
-GROUP BY Dis.[Query Text]
-
-    ,Dis.[Query Text 2]
-
-    ,DIS.[Activity Date/Time]
-
-    ,DIS.Query
-
-    ,DIS.Account
-
-,DIs.EID
-
+  SELECT LACFIN.*
+    ,DIS.EDVitalSigns
+    ,DIS.EDVitalsValues
+    ,row_number() OVER (PARTITION BY DIS.EID, DIS.Query ORDER BY DIS.ActivityDate ASC) RN1
+  FROM LACFIN
+  INNER JOIN DIS ON DIS.EID = LACFIN.EID
   """
-val DIS = sqlContext.sql(querytmp16)
-
-DIS.registerTempTable("DIS")
+val FINAL1 = sqlContext.sql(querytmp16)
+FINAL1.registerTempTable("FINAL1")
 
 
 
@@ -745,29 +666,12 @@ DIS.registerTempTable("DIS")
 
 val querytmp17 =
   """
-
-  SELECT #LACFIN.*
-
-    ,DIS.EDVitalSigns
-
-,DIS.EDVitalsValues
-
-,ROW_NUMBER() OVER (
-
-      PARTITION BY DIS.EID
-
-      ,DIS.query ORDER BY DIS.[ActivityDate] ASC
-
-      ) rn1
-
-  FROM #LACFIN
-
-  INNER JOIN DIS ON dis.EID = #LACFIN.EID
-
+  SELECT *
+  FROM FINAL1
+  WHERE RN1 = 1
   """
-val #final1 = sqlContext.sql(querytmp17)
-
-#final1.registerTempTable("#final1")
+val ACC = sqlContext.sql(querytmp17)
+ACC.registerTempTable("ACC")
 
 
 
@@ -775,17 +679,18 @@ val #final1 = sqlContext.sql(querytmp17)
 
 val querytmp18 =
   """
-
   SELECT *
-
-FROM #final1
-
-  WHERE rn1 = 1
-
+  FROM ACC
+  PIVOT(MAX([EDVITALSVALUES]) FOR [EDVitalSigns] IN (
+    Temperature
+    ,[Blood Pressure Diastolic]
+    ,[Blood Pressure Systolic]
+    ,[Pulse Rate (Adult)]
+,[Respiratory Rate]
+    )) AS PVT
   """
-val acc = sqlContext.sql(querytmp18)
-
-acc.registerTempTable("acc")
+val #GrandFinal = sqlContext.sql(querytmp18)
+#GrandFinal.registerTempTable("#GrandFinal")
 
 
 
@@ -793,509 +698,43 @@ acc.registerTempTable("acc")
 
 val querytmp19 =
   """
-
   SELECT *
-
-  FROM acc
-
-  PIVOT(MAX([EDVITALSVALUES]) FOR [EDVitalSigns] IN (
-    Temperature
-    ,[Blood Pressure Diastolic]
-
-    ,[Blood Pressure Systolic]
-
-    ,[Pulse Rate (Adult)]
-
-,[Respiratory Rate]
-
-    )) AS PVT
-
-  """
-
-val #GrandFinal = sqlContext.sql(querytmp19)
-
-#GrandFinal.registerTempTable("#GrandFinal")
-
-
-
-
-
-val querytmp20 =
-  """
-
-  SELECT *
-
     ,convert(varchar(30), (datediff(mi, GF.[FirstSepsisDoneDate], GF.OrderDatetime)/ 60))+ ':' +
-
     convert(varchar(30), (datediff(mi, GF.[FirstSepsisDoneDate], GF.OrderDatetime)% 60)) AS
 ElapsedTime
-
     ,CASE
-
-      WHEN (GF.[First Abx Admin Date] IS NULL)
+      WHEN (GF.[First_Abx_Admin_Date] IS NULL)
         OR (GF.OrderDatetime IS NULL)
-
         THEN 'NULL'
-
-      WHEN ((DATEDIFF(mi, GF.[First Abx Admin Date], GF.OrderDatetime) <=180) OR
-
-        (DATEDIFF(mi, GF.[First Abx Admin Date], GF.OrderDatetime) <=-1440) )
-
+      WHEN ((DATEDIFF(mi, GF.[First_Abx_Admin_Date], GF.OrderDatetime) <=180) OR
+        (DATEDIFF(mi, GF.[First_Abx_Admin_Date], GF.OrderDatetime) <=-1440) )
         THEN 'Y' ELSE 'N'
-
         END AS 'ABX within 3hr of Sepsis OS'
-
     ,CASE
-
       WHEN (GF.[First BC] IS NULL)
-        OR (GF.[First Abx Admin Date] IS NULL)
-
+        OR (GF.[First_Abx_Admin_Date] IS NULL)
         THEN 'NULL'
       ELSE
     ,CASE
-
-      WHEN GF.[First BC] < GF.[First Abx Admin Date]
-
+      WHEN GF.[First BC] < GF.[First_Abx_Admin_Date]
         THEN 'Y'
-
-      WHEN GF.[First BC] > GF.[First Abx Admin Date]
-
+      WHEN GF.[First BC] > GF.[First_Abx_Admin_Date]
         THEN 'N'
-
         END
       END AS 'BC done prior to ABX Admin'
     ,CASE
       WHEN (GF.[LactateDate] IS NULL)
-
         OR (GF.OrderDateTime IS NULL)
-
         THEN 'NULL'
       WHEN ((DATEDIFF(mi, GF.[LactateDate], GF.[OrderDatetime]) <=180) OR
-
       (DATEDIFF(mi, GF.[LactateDate], GF.[OrderDatetime]) <=-360))
-
       THEN 'Y' ELSE 'N'
-
       END AS 'Lac within 3hr of Sepsis OS'
   FROM #GrandFinal AS GF
-
 LEFT JOIN (
-
       ) Sub ON GF.EID = Sub.SEID
-  WHERE rns = 1
+  WHERE RNS = 1
     OR RNS IS NULL
-
   """
-
-val Report = sqlContext.sql(querytmp20)
-
+val Report = sqlContext.sql(querytmp19)
 Report.registerTempTable("Report")
-
-
-
-
-
-
-
-
-
-
-
-//     test sfuff below this line
-
-
-
-
-import java.sql.Timestamp
-
-
-import org.apache.spark.sql.DataFrame
-
-import org.apache.spark.sql.functions._
-
-import org.apache.spark.sql.types.{DataType, LongType}
-
-
-
-def convertToDateTime: Long => Timestamp = new Timestamp(_)
-
-
-
-/**
-
-  * If the given column in the data frame is of type bigint then it is transformed to timestamp.
-
-  *
-
-  * @param columnName Name of the date column
-  * @param df         Data frame
-
-  * @return transformed column
-
-  */
-
-
-def fixDateTimeColumn(columnName: String, df: DataFrame) = findColumn(df, columnName, LongType)
-
-  .map(udf(convertToDateTime).apply(_))
-
-  .getOrElse(df.col(columnName))
-
-
-
-def findColumn(df: DataFrame, colName: String, colType: DataType) = {
-
-  val existingFieldStruct = df.schema.find(f => {
-
-    f.name == colName && f.dataType == colType
-
-  })
-  existingFieldStruct.map(structField => df.col(structField.name))
-}
-
-
-
-/** val hdfs_path = "hdfs://10.0.100.252:8020/user/hdfs/stjoe/amalga/sqooped/2016/09/01" */
-
-val hdfs_path = "file:///Users/jimmarczyk/01/"
-
-
-
-
-val VISITPT_ALL_DIS = sqlContext.read.parquet(s"$hdfs_path/azViews/VISITPT_ALL_DIS/*.parquet")
-
-VISITPT_ALL_DIS
-
-  .withColumn("AdmitDateTime_f", fixDateTimeColumn("AdmitDateTime", VISITPT_ALL_DIS))
-
-  .withColumn("DischargeDateTime_f", fixDateTimeColumn("DischargeDateTime", VISITPT_ALL_DIS))
-
-  .withColumn("ERAdmitDtTm_f", fixDateTimeColumn("ERAdmitDtTm", VISITPT_ALL_DIS))
-
-  .withColumn("LastIPVisitDtTm_f", fixDateTimeColumn("LastIPVisitDtTm", VISITPT_ALL_DIS))
-
-  .drop("AdmitDateTime")
-
-  .drop("DischargeDateTime")
-
-  .drop("ERAdmitDtTm")
-
-  .drop("LastIPVisitDtTm")
-
-  .withColumnRenamed("AdmitDateTime_f", "AdmitDateTime")
-
-  .withColumnRenamed("DischargeDateTime_f", "DischargeDateTime")
-
-  .withColumnRenamed("ERAdmitDtTm_f", "ERAdmitDtTm")
-
-  .withColumnRenamed("LastIPVisitDtTm_f", "LastIPVisitDtTm")
-
-  .registerTempTable("VISITPT_ALL_DIS")
-
-val ABS_DG1601 = sqlContext.read.parquet(s"$hdfs_path/azABS/ABS_DG1601/*.parquet")
-
-ABS_DG1601.registerTempTable("ABS_DG1601")
-
-
-
-
-
-val querytmp0 =
-  """
-
-  SELECT DISTINCT COUNT(DIS.Name) // , DF.DxCode, DIS.DischargeDateTime, DIS.PatientType, DIS.ServicingFacility, DIS.Institution, DIS.AccountStatus
-
-  FROM VISITPT_ALL_DIS DIS
-
-  JOIN ABS_DG1601 DF ON DIS.EID = DF.EID
-
-  WHERE DF.DxCode IN (
-
-     '785.52'
-
-    ,'995.91'
-
-    ,'995.92'
-
-    ,'R65.21'
-
-,'A41.9'
-
-    ,'R65.20'
-
-,'A021'
-
-    ,'A227'
-
-    ,'A267'
-
-    ,'A327'
-
-    ,'A400'
-
-    ,'A401'
-
-    ,'A403'
-
-    ,'A408'
-
-    ,'A409'
-
-    ,'A4101'
-
-    ,'A4102'
-
-    ,'A411'
-
-    ,'A412'
-
-,'A413'
-
-,'A414'
-
-    ,'A4150'
-
-    ,'A4151'
-
-    ,'A4152'
-
-    ,'A4153'
-
-,'A4159'
-
-    ,'A4181'
-
-,'A4189'
-
-    ,'A419'
-
-    ,'A427'
-
-,'A5486'
-
-    ,'B377'
-
-    ,'R6520'
-
-,'R6521')
-AAND DIS.DischargeDateTime BETWEEN '2016-01-01 00:00:00.0' AND '2016-01-31 23:59:00.0'
-
-AND DIS.PatientType = 'IN'
-
-AND DIS.ServicingFacility = 'SMM'
-
-AND DIS.Institution = 'MHR'
-
-AND DIS.AccountStatus = 'DIS'
-
-  """
-val freebase = sqlContext.sql(querytmp0)
-
-freebase.registerTempTable("freebase")
-
-
-
-
-
-
-
-
-
-val querytmp0 =
-  """
-
-  SELECT COUNT(DIS.EID)
-
-ROM VISITPT_ALL_DIS DIS
-
-  JOIN ABS_DG1601 DF ON DIS.EID = DF.EID
-
-  WHERE DIS.Institution = 'MHR'
-
-    AND DIS.ServicingFacility = 'SMM'
-
-    AND DIS.PatientType = 'IN'
-
-    AND DIS.DischargeDateTime BETWEEN '2016-01-01 00:00:00.0' AND '2016-01-31 23:59:00.0'
-
-    AND DIS.AccountStatus = 'DIS'
-
-  """
-
-val freebase = sqlContext.sql(querytmp0)
-
-freebase.registerTempTable("freebase")
-
-
-
-
-
-
-
-val querytmp0 =
-  """
-  SELECT DISTINCT COUNT(DIS.Name)
-
-FROM ABS_DG1601 DF
-
-  WHERE DF.DxCode IN (
-
-     '785.52'
-    ,'995.91'
-
-    ,'995.92'
-
-    ,'R65.21'
-
-    ,'A41.9'
-
-,'R65.20'
-
-    ,'A021'
-
-    ,'A227'
-
-    ,'A267'
-
-,'A327'
-
-    ,'A400'
-
-,'A401'
-
-    ,'A403'
-
-    ,'A408'
-
-    ,'A409'
-
-    ,'A4101'
-
-,'A4102'
-
-    ,'A411'
-
-    ,'A412'
-
-,'A413'
-    ,'A414'
-
-    ,'A4150'
-
-    ,'A4151'
-
-    ,'A4152'
-
-    ,'A4153'
-
-    ,'A4159'
-
-    ,'A4181'
-
-    ,'A4189'
-
-,'A419'
-
-    ,'A427'
-
-    ,'A5486'
-
-    ,'B377'
-
-    ,'R6520'
-
-    ,'R6521'
-
-    )
-
-  """
-val freebase = sqlContext.sql(querytmp0)
-
-freebase.registerTempTable("freebase")
-
-
-
-
-
-
-//val hdfs_path = "file:///Users/jimmarczyk/01/"
-
-
-
-val ABS_DG1601 = sqlContext.read.parquet(s"$hdfs_path/azABS/ABS_DG1601/*.parquet")
-
-ABS_DG1601.registerTempTable("ABS_DG1601")
-
-
-
-val VISITPT_ALL_DIS = sqlContext.read.parquet(s"$hdfs_path/azViews/VISITPT_ALL_DIS/*.parquet")
-
-VISITPT_ALL_DIS.registerTempTable("VISITPT_ALL_DIS")
-
-
-
-//val hdfs_path = "file:///Users/jimmarczyk/01/"
-
-val hdfs_path = "hdfs://10.0.100.252:8020/user/hdfs/stjoe/amalga/sqooped/2016/09/01"
-
-
-
-
-val PID601 = sqlContext.read.parquet(s"$hdfs_path/azADT/PID601/*.parquet")
-
-PID601.registerTempTable("PID601")
-
-
-
-val querytmp0 =
-  """
-  select count(EID)
-
-from PID601
-
-  """
-
-
-val freebase = sqlContext.sql(querytmp0)
-
-freebase.registerTempTable("freebase")
-
-
-
-val hdfs_path = "file:///Users/jimmarczyk/01/"
-
-//val hdfs_path = "hdfs://10.0.100.252:8020/user/hdfs/stjoe/amalga/sqooped/2016/09/01"
-
-
-
-val LABVISITPT_ALL_DIS = sqlContext.read.parquet(s"$hdfs_path/azViews/LABVISITPT_ALL_DIS/*.parquet")
-
-LABVISITPT_ALL_DIS
-
-  .withColumn("CollectedDateTime_f", fixDateTimeColumn("CollectedDateTime", LABVISITPT_ALL_DIS))
-
-  .withColumn("DischargeDateTime_f", fixDateTimeColumn("DischargeDateTime", LABVISITPT_ALL_DIS))
-
-  .drop("CollectedDateTime")
-
-  .drop("DischargeDateTime")
-
-  .withColumnRenamed("CollectedDateTime_f", "CollectedDateTime")
-
-  .withColumnRenamed("DischargeDateTime_f", "DischargeDateTime")
-
-  .registerTempTable("LABVISITPT_ALL_DIS")
-
-
-
-import org.apache.spark.sql.functions.rank
-import org.apache.spark.sql.expressions.Window
-
-val w = Window.orderBy($"value")
-
-val df = sc.parallelize(Seq(
-  ("a", 5), ("b", 10), ("c", 5), ("d", 6)
-)).toDF("user", "value")
-
-df.select($"user", rank.over(w).alias("rank")).show
-
