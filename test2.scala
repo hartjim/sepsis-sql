@@ -8,26 +8,34 @@
 import java.sql.Timestamp
 import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.functions._
-import org.apache.spark.sql.types.{DataType, LongType}
+import org.apache.spark.sql.types.{DataType, LongType, StringType}
 
+// ************ converting utc to timestamp
 
-//object test2 {
+def convertToDateTime: Long => Timestamp = new Timestamp(_)
 
-  def convertToDateTime: Long => Timestamp = new Timestamp(_)
-
-  def fixDateTimeColumn(columnName: String, df: DataFrame) = findColumn(df, columnName, LongType)
+def fixDateTimeColumn(columnName: String, df: DataFrame) = findColumn(df, columnName, LongType)
     .map(udf(convertToDateTime).apply(_))
     .getOrElse(df.col(columnName))
 
-
-  def findColumn(df: DataFrame, colName: String, colType: DataType) = {
+def findColumn(df: DataFrame, colName: String, colType: DataType) = {
     val existingFieldStruct = df.schema.find(f => {
       f.name == colName && f.dataType == colType
-    })
+  })
     existingFieldStruct.map(structField => df.col(structField.name))
   }
-//}
-/**  user-defined function  */
+
+// ************ converting string to long (numeric in order to aggregate)
+
+def convertToNumeric: String => Double = _.toDouble
+
+def fixString(columnName: String, df: DataFrame) = findColumn(df, columnName, StringType)
+    .map(udf(convertToNumeric).apply(_))
+    .getOrElse(df.col(columnName))
+
+
+
+/***********  user-defined function  **************/
 
 
 
@@ -42,8 +50,8 @@ def addHours(dttmColumn1: Timestamp, dttmColumn2: Timestamp, numberOfHours: Inte
 sqlContext.udf.register("addHours", addHours(_:Timestamp, _:Timestamp, _:Integer))
 
 
+/************ table definitions *************/
 
-/** table definitions */
 
 //val hdfs_path = "hdfs://10.0.100.252:8020/user/hdfs/stjoe/amalga/sqooped/2016/09/01"
 val hdfs_path = "file:///Users/jimmarczyk/01/"
@@ -141,6 +149,7 @@ val DPhaDrugData = sqlContext.read.parquet(s"$hdfs_path/sjhsOE/DPhaDrugData/*.pa
 DPhaDrugData.registerTempTable("DPhaDrugData")
 
 
+/******** the 20 sub queries ******** */
 
 
 val querytmp0 =
@@ -661,9 +670,6 @@ val FINAL1 = sqlContext.sql(querytmp16)
 FINAL1.registerTempTable("FINAL1")
 
 
-
-
-
 val querytmp17 =
   """
   SELECT *
@@ -671,70 +677,57 @@ val querytmp17 =
   WHERE RN1 = 1
   """
 val ACC = sqlContext.sql(querytmp17)
-ACC.registerTempTable("ACC")
-
-
-
+ACC
+  .withColumn("EDVitalsValues_f", fixString("EDVitalsValues", ACC))
+  .drop("EDVitalsValues")
+  .withColumnRenamed("EDVitalsValues_f", "EDVitalsValues")
+  .registerTempTable("ACC")
 
 
 val querytmp18 =
   """
-  SELECT *
-  FROM ACC
-  PIVOT(MAX([EDVITALSVALUES]) FOR [EDVitalSigns] IN (
-    Temperature
-    ,[Blood Pressure Diastolic]
-    ,[Blood Pressure Systolic]
-    ,[Pulse Rate (Adult)]
-,[Respiratory Rate]
-    )) AS PVT
+SELECT *
+FROM ACC
   """
-val #GrandFinal = sqlContext.sql(querytmp18)
-#GrandFinal.registerTempTable("#GrandFinal")
-
+val gf = sqlContext.sql(querytmp18)
+val GrandFinal = gf.groupBy("EID").pivot("EDVitalSigns").max("EDVitalsValues")
+GrandFinal.registerTempTable("GrandFinal")
 
 
 
 
 val querytmp19 =
   """
+SELECT EID AS SEID
+  ,observationvalue
+  ,observationdttm AS RESULTED_DATETIME
+  ,universalserviceid
+  ,ROW_NUMBER() OVER (
+    PARTITION BY EID ORDER BY observationdttm
+    ) RNS
+FROM LABVISITPT_ALL_DIS
+WHERE Institution IN ("MHR")
+  AND DischargeDateTime BETWEEN '2016-01-01 00:00:00.0'
+    AND '2016-01-31 23:59:00.0'
+  AND universalserviceid LIKE "%_CBC%"
+    OR universalserviceid LIKE "%_Differential%"
+  AND observation LIKE "Band%"
+  """
+val SUB = sqlContext.sql(querytmp19)
+SUB.registerTempTable("SUB")
+
+
+
+
+val querytmp20 =
+  """
   SELECT *
-    ,convert(varchar(30), (datediff(mi, GF.[FirstSepsisDoneDate], GF.OrderDatetime)/ 60))+ ':' +
-    convert(varchar(30), (datediff(mi, GF.[FirstSepsisDoneDate], GF.OrderDatetime)% 60)) AS
-ElapsedTime
-    ,CASE
-      WHEN (GF.[First_Abx_Admin_Date] IS NULL)
-        OR (GF.OrderDatetime IS NULL)
-        THEN 'NULL'
-      WHEN ((DATEDIFF(mi, GF.[First_Abx_Admin_Date], GF.OrderDatetime) <=180) OR
-        (DATEDIFF(mi, GF.[First_Abx_Admin_Date], GF.OrderDatetime) <=-1440) )
-        THEN 'Y' ELSE 'N'
-        END AS 'ABX within 3hr of Sepsis OS'
-    ,CASE
-      WHEN (GF.[First BC] IS NULL)
-        OR (GF.[First_Abx_Admin_Date] IS NULL)
-        THEN 'NULL'
-      ELSE
-    ,CASE
-      WHEN GF.[First BC] < GF.[First_Abx_Admin_Date]
-        THEN 'Y'
-      WHEN GF.[First BC] > GF.[First_Abx_Admin_Date]
-        THEN 'N'
-        END
-      END AS 'BC done prior to ABX Admin'
-    ,CASE
-      WHEN (GF.[LactateDate] IS NULL)
-        OR (GF.OrderDateTime IS NULL)
-        THEN 'NULL'
-      WHEN ((DATEDIFF(mi, GF.[LactateDate], GF.[OrderDatetime]) <=180) OR
-      (DATEDIFF(mi, GF.[LactateDate], GF.[OrderDatetime]) <=-360))
-      THEN 'Y' ELSE 'N'
-      END AS 'Lac within 3hr of Sepsis OS'
-  FROM #GrandFinal AS GF
-LEFT JOIN (
-      ) Sub ON GF.EID = Sub.SEID
+    ,DATEDIFF(GF.OrderDateTime, GF.FirstSepsisDoneDate)/ 60 + ':' +
+    DATEDIFF(GF.OrderDateTime, GF.FirstSepsisDoneDate)% 60 AS ElapsedTime
+  FROM GrandFinal AS GF
+  LEFT JOIN SUB ON GF.EID = SUB.SEID
   WHERE RNS = 1
     OR RNS IS NULL
   """
-val Report = sqlContext.sql(querytmp19)
+val Report = sqlContext.sql(querytmp20)
 Report.registerTempTable("Report")
