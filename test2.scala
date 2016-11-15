@@ -10,7 +10,9 @@ import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types.{DataType, LongType, StringType}
 
-// ************ converting utc to timestamp
+
+/************ converting utc to timestamp ******************/
+
 
 def convertToDateTime: Long => Timestamp = new Timestamp(_)
 
@@ -25,7 +27,9 @@ def findColumn(df: DataFrame, colName: String, colType: DataType) = {
     existingFieldStruct.map(structField => df.col(structField.name))
   }
 
-// ************ converting string to long (numeric in order to aggregate)
+
+/************ converting string to long (numeric in order to aggregate) *********/
+
 
 def convertToNumeric: String => Double = _.toDouble
 
@@ -149,7 +153,7 @@ val DPhaDrugData = sqlContext.read.parquet(s"$hdfs_path/sjhsOE/DPhaDrugData/*.pa
 DPhaDrugData.registerTempTable("DPhaDrugData")
 
 
-/******** the 20 sub queries ******** */
+/*************** the 20 sub queries **************** */
 
 
 val querytmp0 =
@@ -242,6 +246,10 @@ val querytmp0 =
   """
 val MN = sqlContext.sql(querytmp0)
 MN.registerTempTable("MN")
+// MN.write.save("file:///tmp/MN")
+// val MN = sqlContext.read.parquet("file:///tmp/MN").toDF("MN"
+// val MN = sqlContext.read.parquet(rowsPath).toDF()
+
 
 
 val querytmp1 =
@@ -717,13 +725,76 @@ val SUB = sqlContext.sql(querytmp19)
 SUB.registerTempTable("SUB")
 
 
+//val querytmp20 =
+//  """
+//  SELECT GF.OrderDateTime, GF.FirstSepsisDoneDate
+//  FROM GrandFinal AS GF
+//  LEFT JOIN SUB ON GF.EID = SUB.SEID
+//  WHERE RNS = 1
+//    OR RNS IS NULL
+//  """
+//val Report = sqlContext.sql(querytmp20)
+//Report.registerTempTable("Report")
+
+
+val querytmp20 =
+  """
+  SELECT GF.OrderDateTime, GF.FirstSepsisDoneDate
+  FROM GrandFinal AS GF
+  """
+val Report = sqlContext.sql(querytmp20)
+Report.registerTempTable("Report")
 
 
 val querytmp20 =
   """
   SELECT *
-    ,DATEDIFF(GF.OrderDateTime, GF.FirstSepsisDoneDate)/ 60 + ':' +
-    DATEDIFF(GF.OrderDateTime, GF.FirstSepsisDoneDate)% 60 AS ElapsedTime
+    ,CONCAT((DATEDIFF(GF.OrderDateTime, GF.FirstSepsisDoneDate)/ 60),':', (DATEDIFF(GF.OrderDateTime, GF.FirstSepsisDoneDate) % 60)) AS ElapsedTime
+  FROM GrandFinal AS GF
+  LEFT JOIN SUB ON GF.EID = SUB.SEID
+  WHERE RNS = 1
+    OR RNS IS NULL
+  """
+val Report = sqlContext.sql(querytmp20)
+Report.registerTempTable("Report")
+
+
+
+
+val querytmp20 =
+  """
+  SELECT *
+    ,CONCAT((DATEDIFF(GF.OrderDateTime, GF.FirstSepsisDoneDate)/ 60),':', (DATEDIFF(GF.OrderDateTime, GF.FirstSepsisDoneDate) % 60)) AS ElapsedTime
+    ,CASE
+      WHEN GF.First_Abx_Admin_Date IS NULL
+        OR GF.OrderDateTime IS NULL
+        THEN 'NULL'
+      WHEN DATEDIFF(GF.OrderDateTime, GF.First_Abx_Admin_Date) <=180 OR
+        DATEDIFF(GF.OrderDateTime, GF.First_Abx_Admin_Date) <= -1440
+        THEN 'Y'
+      ELSE 'N'
+    END AS 'ABX_within_3hr_of_Sepsis_OS'
+//    ,CASE
+//      WHEN GF.First_BC IS NULL
+//        OR GF.First_Abx_Admin_Date IS NULL
+//        THEN 'NULL'
+//      ELSE
+//        ,CASE
+//          WHEN GF.First_BC < GF.First_Abx_Admin_Date
+//            THEN 'Y'
+//          WHEN GF.First_BC > GF.First_Abx_Admin_Date
+//            THEN 'N'
+//        END
+//    END AS 'BC_done_prior_to_ABX_Admin'
+//    ,CASE
+//      WHEN GF.LactateDate IS NULL
+//        OR GF.OrderDateTime IS NULL
+//        THEN 'NULL'
+//      WHEN DATEDIFF(GF.OrderDateTime, GF.LactateDate) <= 180
+//        OR DATEDIFF(GF.OrderDateTime, GF.LactateDate) <= -360
+//        THEN 'Y'
+//      ELSE 'N'
+//    END AS 'Lac_within_3hr_of_Sepsis_OS'
   FROM GrandFinal AS GF
   LEFT JOIN SUB ON GF.EID = SUB.SEID
   WHERE RNS = 1
