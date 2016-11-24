@@ -774,27 +774,27 @@ val querytmp20 =
         THEN 'Y'
       ELSE 'N'
     END AS 'ABX_within_3hr_of_Sepsis_OS'
-//    ,CASE
-//      WHEN GF.First_BC IS NULL
-//        OR GF.First_Abx_Admin_Date IS NULL
-//        THEN 'NULL'
-//      ELSE
-//        ,CASE
-//          WHEN GF.First_BC < GF.First_Abx_Admin_Date
-//            THEN 'Y'
-//          WHEN GF.First_BC > GF.First_Abx_Admin_Date
-//            THEN 'N'
-//        END
-//    END AS 'BC_done_prior_to_ABX_Admin'
-//    ,CASE
-//      WHEN GF.LactateDate IS NULL
-//        OR GF.OrderDateTime IS NULL
-//        THEN 'NULL'
-//      WHEN DATEDIFF(GF.OrderDateTime, GF.LactateDate) <= 180
-//        OR DATEDIFF(GF.OrderDateTime, GF.LactateDate) <= -360
-//        THEN 'Y'
-//      ELSE 'N'
-//    END AS 'Lac_within_3hr_of_Sepsis_OS'
+    ,CASE
+      WHEN GF.First_BC IS NULL
+        OR GF.First_Abx_Admin_Date IS NULL
+        THEN 'NULL'
+      ELSE
+        ,CASE
+          WHEN GF.First_BC < GF.First_Abx_Admin_Date
+            THEN 'Y'
+          WHEN GF.First_BC > GF.First_Abx_Admin_Date
+            THEN 'N'
+        END
+    END AS 'BC_done_prior_to_ABX_Admin'
+    ,CASE
+      WHEN GF.LactateDate IS NULL
+        OR GF.OrderDateTime IS NULL
+        THEN 'NULL'
+      WHEN DATEDIFF(GF.OrderDateTime, GF.LactateDate) <= 180
+        OR DATEDIFF(GF.OrderDateTime, GF.LactateDate) <= -360
+        THEN 'Y'
+      ELSE 'N'
+    END AS 'Lac_within_3hr_of_Sepsis_OS'
   FROM GrandFinal AS GF
   LEFT JOIN SUB ON GF.EID = SUB.SEID
   WHERE RNS = 1
